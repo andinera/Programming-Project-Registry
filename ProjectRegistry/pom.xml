@@ -1,0 +1,171 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.Lockwood.Shane</groupId>
+  <artifactId>ProjectRegistry</artifactId>
+  <packaging>war</packaging>
+  <version>0.0.1-SNAPSHOT</version>
+  <name>ProjectRegistry Maven Webapp</name>
+  <url>http://maven.apache.org</url>
+  <properties>
+  	<maven.compiler.source>1.8</maven.compiler.source>
+  	<maven.compiler.target>1/8</maven.compiler.target>
+  <!-- Dependency Versions -->
+  	<spring.version>5.0.8.RELEASE</spring.version>
+  	<spring.security.version>5.0.8.RELEASE</spring.security.version>
+  	<hibernate.version>5.2.12.Final</hibernate.version>
+  	<junit.version>4.12</junit.version>
+  	<!-- Plugin Versions -->
+  	<tomcat.version>2.2</tomcat.version>
+  </properties>
+  <dependencies>
+    <!-- Spring Core -->
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-core</artifactId>
+      <version>${spring.version}</version>
+    </dependency>
+    <!-- Spring Context -->
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-context</artifactId>
+      <version>${spring.version}</version>
+    </dependency>
+    <!-- Spring MVC -->
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-webmvc</artifactId>
+      <version>${spring.version}</version>
+    </dependency>
+    <!-- Spring Web -->
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-web</artifactId>
+      <version>${spring.version}</version>
+    </dependency>
+    <!-- Spring ORM -->
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-orm</artifactId>
+      <version>${spring.version}</version>
+    </dependency>
+    <!-- Spring Security Core -->
+    <dependency>
+      <groupId>org.springframework.security</groupId>
+      <artifactId>spring-security-core</artifactId>
+      <version>${spring.security.version}</version>
+    </dependency>
+    <!-- Spring Security Web -->
+    <dependency>
+      <groupId>org.springframework.security</groupId>
+      <artifactId>spring-security-web</artifactId>
+      <version>${spring.security.version}</version>
+    </dependency>
+    <!-- Spring Security Config -->
+    <dependency>
+      <groupId>org.springframework.security</groupId>
+      <artifactId>spring-security-config</artifactId>
+      <version>${spring.security.version}</version>
+    </dependency>
+    <!-- Hibernate -->
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-core</artifactId>
+      <version>${hibernate.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-entitymanager</artifactId>
+      <version>${hibernate.version}</version>
+    </dependency>
+<!--     <dependency> -->
+<!--       <groupId>org.hibernate</groupId> -->
+<!--       <artifactId>hibernate-validator</artifactId> -->
+<!--       <version>${hibernate.version}</version> -->
+<!--     </dependency> -->
+<!--     Apache Commons DBCP -->
+    <dependency>
+      <groupId>commons-dbcp</groupId>
+      <artifactId>commons-dbcp</artifactId>
+      <version>1.4</version>
+    </dependency>
+    <!-- MySQL -->
+    <dependency>
+      <groupId>mysql</groupId>
+      <artifactId>mysql-connector-java</artifactId>
+      <version>8.0.11</version>
+    </dependency>
+    <!-- Tomcat -->
+<!--     <dependency> -->
+<!--       <groupId>org.apache.tomcat</groupId> -->
+<!--       <artifactId>tomcat-dbcp</artifactId> -->
+<!--       <version>9.0.1</version> -->
+<!--     </dependency> -->
+<!--     JAXB API -->
+    <dependency>
+      <groupId>javax.xml.bind</groupId>
+      <artifactId>jaxb-api</artifactId>
+      <version>2.2.11</version>
+    </dependency>
+<!--     JAXB Core -->
+<!--     <dependency> -->
+<!--       <groupId>com.sun.xml.bind</groupId> -->
+<!--       <artifactId>jaxb-core</artifactId> -->
+<!--       <version>2.3.0</version> -->
+<!--     </dependency> -->
+<!--     JAXB Impl -->
+<!--     <dependency> -->
+<!--       <groupId>com.sun.xml.bind</groupId> -->
+<!--       <artifactId>jaxb-impl</artifactId> -->
+<!--       <version>2.3.0</version> -->
+<!--     </dependency> -->
+<!--     Javax Activation -->
+<!--     <dependency> -->
+<!--       <groupId>javax.activation</groupId> -->
+<!--       <artifactId>activation</artifactId> -->
+<!--       <version>1.1.1</version> -->
+<!--     </dependency> -->
+<!-- Javax Servlet -->
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>javax.servlet-api</artifactId>
+      <version>3.0.1</version>
+      <scope>provided</scope>
+    </dependency>
+<!--     JSP API -->
+    <dependency>
+      <groupId>javax.servlet.jsp</groupId>
+      <artifactId>jsp-api</artifactId>
+      <version>2.1</version>
+      <scope>provided</scope>
+    </dependency>
+<!--     JSTL -->
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>jstl</artifactId>
+      <version>1.2</version>
+    </dependency>
+<!--     Javax Inject -->
+    <dependency>
+      <groupId>javax.inject</groupId>
+      <artifactId>javax.inject</artifactId>
+      <version>1</version>
+    </dependency>
+<!--     Javax Validator -->
+<!--     <dependency> -->
+<!--       <groupId>javax.validation</groupId> -->
+<!--       <artifactId>validation-api</artifactId> -->
+<!--       <version>2.0.1.Final</version> -->
+<!--     </dependency> -->
+  </dependencies>
+  <build>
+    <finalName>ProjectRegistry</finalName>
+    <plugins>
+    	<plugin>
+    		<groupId>org.apache.tomcat.maven</groupId>
+    		<artifactId>tomcat7-maven-plugin</artifactId>
+    		<version>${tomcat.version}</version>
+    	</plugin>
+    </plugins>
+  </build>
+</project>
