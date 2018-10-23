@@ -15,7 +15,7 @@ import javax.persistence.MappedSuperclass;
 abstract public class Vote {
 	
 	private int id;
-	private User user;
+	private User voter;
 	private boolean upVote;
 	
 	
@@ -35,12 +35,12 @@ abstract public class Vote {
 	
 	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="username", nullable=false)
-	public User getUser() {
-		return this.user;
+	public User getVoter() {
+		return this.voter;
 	}
 	
-	public void setUser(User user) {
-		this.user = user;
+	public void setVoter(User voter) {
+		this.voter = voter;
 	}
 	
 	@Column(name="upVote", nullable=false)

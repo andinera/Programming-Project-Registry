@@ -3,6 +3,7 @@ package spring.service;
 import java.util.List;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.Date;
 
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,7 +54,7 @@ public class IdeaService {
 	public Idea loadIdeaById(int id) {
 		Idea idea = ideaDAO.loadIdeaById(id);
 		Hibernate.initialize(idea.getPoster());
-		Hibernate.initialize(idea.numVotes());
+		Hibernate.initialize(idea.getVotes());
 		Hibernate.initialize(idea.getDevelopments());
 		for(Development development : idea.getDevelopments()) {
 			Hibernate.initialize(development.getIdea());
@@ -69,11 +70,25 @@ public class IdeaService {
 	}
 	
 	@Transactional(readOnly=true)
+	public List<Idea> loadIdeasByFilter(Date startDate, Date stopDate) {
+		GregorianCalendar startCal = new GregorianCalendar();
+		startCal.setTime(startDate);
+		GregorianCalendar stopCal = new GregorianCalendar();
+		stopCal.setTime(stopDate);
+		List<Idea> ideas = ideaDAO.loadIdeasByFilter(startCal, stopCal);
+		for (Idea idea: ideas) {
+			Hibernate.initialize(idea.getPoster());
+			Hibernate.initialize(idea.getVotes());
+		}
+		return ideas;
+	}
+	
+	@Transactional(readOnly=true)
 	public List<Idea> loadAllIdeas() {
 		List<Idea> ideas = ideaDAO.loadAllIdeas();
 		for (Idea idea: ideas) {
 			Hibernate.initialize(idea.getPoster());
-			Hibernate.initialize(idea.numVotes());
+			Hibernate.initialize(idea.getVotes());
 		}
 		return ideas;
 	}

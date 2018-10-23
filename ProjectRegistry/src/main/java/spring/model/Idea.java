@@ -109,8 +109,21 @@ public class Idea {
 		return this;
 	}
 	
-	public int numVotes() {
-		return this.getVotes().size();
+	public Idea addVote(IdeaVote vote) {
+		this.getVotes().add(vote);
+		return this;
+	}
+	
+	public int voteCount() {
+		int count = 0;
+		for (IdeaVote vote : this.getVotes()) {
+			if (vote.getUpVote()) {
+				count++;
+			} else {
+				count --;
+			}
+		}
+		return count;
 	}
 	
 	@OneToMany(fetch=FetchType.LAZY, mappedBy="idea", cascade=CascadeType.ALL)

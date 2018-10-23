@@ -10,10 +10,18 @@
 <body>
 	<jsp:include page="header.jsp" />
 	<br>
+	<h2>Searched: ${keyword}</h2>
 	<br>
-	<c:forEach items="${users}" var="user">
-		${user.getUsername()}<br>
-	</c:forEach>
+	<table>
+		<c:forEach items="${users}" var="user">
+			<tr>
+				<td>
+					<a href="<c:url value='/user/profile?username=${user.getUsername()}' />">${user.getUsername()}</a>
+				</td>
+			</tr>
+		</c:forEach>
+	</table>
+	
 
 </body>
 </html>

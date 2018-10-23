@@ -83,7 +83,20 @@ public class Development {
 		return this;
 	}
 	
-	public int numVotes() {
-		return this.getVotes().size();
+	public Development addVote(DevelopmentVote vote) {
+		this.getVotes().add(vote);
+		return this;
+	}
+	
+	public int voteCount() {
+		int count = 0;
+		for (DevelopmentVote vote : this.getVotes()) {
+			if (vote.getUpVote()) {
+				count++;
+			} else {
+				count --;
+			}
+		}
+		return count;
 	}
 }

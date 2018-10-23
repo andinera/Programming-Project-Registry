@@ -1,10 +1,13 @@
 package spring.controller;
 
+import java.util.Date;
+
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -29,11 +32,23 @@ public class ViewController {
 	@Autowired
 	private CommentService commentService;
 	
+	@Autowired
+	private VoteService voteService;
+	
 	
 	@GetMapping({"/", "/home"})
 	public ModelAndView home() {
 		ModelAndView model = new ModelAndView();
 		model.addObject("ideas", ideaService.loadAllIdeas());
+		model.setViewName("home");
+		return model;
+	}
+	
+	@PostMapping("/home/filter")
+	public ModelAndView filterHomeByDate(@RequestParam(value="startDate", required=false) @DateTimeFormat(pattern="yyy-MM-dd") Date startDate,
+										 @RequestParam(value="stopDate", required=false) @DateTimeFormat(pattern="yyy-MM-dd") Date stopDate) {
+		ModelAndView model = new ModelAndView();
+		model.addObject("ideas", ideaService.loadIdeasByFilter(startDate, stopDate));
 		model.setViewName("home");
 		return model;
 	}
@@ -53,8 +68,10 @@ public class ViewController {
 	}
 	
 	@GetMapping("/user/new/form")
-	public ModelAndView newUserPage() {
+	public ModelAndView newUserPage(HttpSession session,
+									HttpServletRequest request) {
 		ModelAndView model = new ModelAndView();
+		session.setAttribute("previousView", request.getHeader("Referer"));
 		model.addObject("user", userService.buildUser());
 		model.setViewName("newUserForm");
 		return model;
@@ -62,17 +79,20 @@ public class ViewController {
 	
 	@PostMapping("/user/new/create")
 	public RedirectView newUser(@RequestParam(value="username", required=true) String username,
-								@RequestParam(value="password", required=true) String password) {
+								@RequestParam(value="password", required=true) String password,
+								HttpSession session) {
 		RedirectView view = new RedirectView();
 		userService.saveUser(username, password);
-		view.setUrl("/home");
+		view.setUrl((String)session.getAttribute("previousView"));
 		view.setContextRelative(true);
+		session.removeAttribute("previousView");
 		return view;
 	}
 	
 	@GetMapping("/user/search")
 	public ModelAndView usersearch(@RequestParam(value="search", required=true) String search) {
 		ModelAndView model = new ModelAndView();
+		model.addObject("keyword", search);
 		model.addObject("users", userService.loadUsersBySearch(search));
 		model.setViewName("userSearch");
 		return model;
@@ -118,6 +138,22 @@ public class ViewController {
 		return model;
 	}
 	
+	@PostMapping("/idea/new/vote")
+	public RedirectView ideaVote(@RequestParam(value="upVote", required=true) String upVote,
+								   HttpSession session,
+							   	   HttpServletRequest request) {
+		RedirectView view = new RedirectView();
+		User voter = userService.loadUserByUsername(request.getUserPrincipal().getName());
+		Idea idea = ideaService.loadIdeaById((int)session.getAttribute("ideaId"));
+		IdeaVote vote = voteService.buildVote(voter, Boolean.valueOf(upVote), idea);
+		idea.addVote(vote);
+		ideaService.updateIdea(idea);
+		view.setUrl("/idea?id=" + Integer.toString((int)session.getAttribute("ideaId")));
+		view.setContextRelative(true);
+		session.removeAttribute("ideaId");
+		return view;
+	}
+	
 	@GetMapping("/development/new/form")
 	public ModelAndView postDevelopment() {
 		ModelAndView model = new ModelAndView();
@@ -143,6 +179,23 @@ public class ViewController {
 		return view;
 	}
 	
+	@PostMapping("/development/new/vote")
+	public RedirectView developmentVote(@RequestParam(value="upVote", required=true) String upVote,
+								   @RequestParam(value="developmentId", required=true) String developmentId,
+								   HttpSession session,
+							   	   HttpServletRequest request) {
+		RedirectView view = new RedirectView();
+		User voter = userService.loadUserByUsername(request.getUserPrincipal().getName());
+		Development development = developmentService.loadDevelopmentById(Integer.parseInt(developmentId));
+		DevelopmentVote vote = voteService.buildVote(voter, Boolean.valueOf(upVote), development);
+		development.addVote(vote);
+		developmentService.updateDevelopment(development);
+		view.setUrl("/idea?id=" + Integer.toString((int)session.getAttribute("ideaId")));
+		view.setContextRelative(true);
+		session.removeAttribute("ideaId");
+		return view;
+	}
+	
 	@GetMapping("/comment/new/form")
 	public ModelAndView postComment() {
 		ModelAndView model = new ModelAndView();
@@ -159,10 +212,24 @@ public class ViewController {
 		User commenter = userService.loadUserByUsername(request.getUserPrincipal().getName());
 		Comment c = commentService.buildComment(commenter, comment);
 		idea.addComment(c);
-		
-//		commentService.saveComment(c);
-//		idea.addComment(c);
 		ideaService.updateIdea(idea);
+		view.setUrl("/idea?id=" + Integer.toString((int)session.getAttribute("ideaId")));
+		view.setContextRelative(true);
+		session.removeAttribute("ideaId");
+		return view;
+	}
+	
+	@PostMapping("/comment/new/vote")
+	public RedirectView commentVote(@RequestParam(value="upVote", required=true) String upVote,
+								   @RequestParam(value="commentId", required=true) String commentId,
+								   HttpSession session,
+							   	   HttpServletRequest request) {
+		RedirectView view = new RedirectView();
+		User voter = userService.loadUserByUsername(request.getUserPrincipal().getName());
+		Comment comment = commentService.loadCommentById(Integer.parseInt(commentId));
+		CommentVote vote = voteService.buildVote(voter, Boolean.valueOf(upVote), comment);
+		comment.addVote(vote);
+		commentService.updateComment(comment);
 		view.setUrl("/idea?id=" + Integer.toString((int)session.getAttribute("ideaId")));
 		view.setContextRelative(true);
 		session.removeAttribute("ideaId");

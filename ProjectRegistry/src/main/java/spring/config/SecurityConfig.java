@@ -26,7 +26,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http.authorizeRequests().antMatchers("/idea/new/**", "/development/new/**").hasRole("IDEATER")
+		http.authorizeRequests().antMatchers("/idea/new/**", "/development/new/**", "/comment/new/**").hasRole("IDEATER")
 			.and()
 			.formLogin().defaultSuccessUrl("/").loginPage("/login").loginProcessingUrl("/j_spring_security_check").failureUrl("/login?error").usernameParameter("username").passwordParameter("password")
 			.and()

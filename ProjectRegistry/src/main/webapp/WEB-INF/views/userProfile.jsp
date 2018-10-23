@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -25,9 +26,9 @@
 		</tr>
 		<c:forEach items="${user.getIdeas()}" var="idea">
 			<tr>
-				<td>${idea.getDatePosted().getTime()}</td>
+				<td><fmt:formatDate type="date" value="${idea.getDatePosted().getTime()}" /></td>
 				<td><a href="<c:url value='/idea?id=${idea.getId()}' />">${idea.getTitle()}</a></td>
-				<td>${idea.numVotes()}</td>
+				<td>${idea.voteCount()}</td>
 			</tr>
 		</c:forEach>
 	</table>
@@ -46,7 +47,7 @@
 			<tr>
 				<td><a href="<c:url value='/idea?id=${development.getIdea().getId()}' />">${development.getIdea().getTitle()}</a></td>
 				<td>${development.getLink()}</td>
-				<td>${development.numVotes()}</td>
+				<td>${development.voteCount()}</td>
 			</tr>
 		</c:forEach>
 	</table>

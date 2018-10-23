@@ -4,10 +4,8 @@ import java.util.GregorianCalendar;
 import java.util.Set;
 
 import org.springframework.stereotype.Component;
-import org.springframework.context.annotation.Scope;
 
 import spring.model.Comment;
-import spring.model.Idea;
 import spring.model.User;
 import spring.model.CommentVote;
 

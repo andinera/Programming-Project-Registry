@@ -2,6 +2,7 @@ package spring.service;
 
 import java.util.GregorianCalendar;
 
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Component;
@@ -29,10 +30,22 @@ public class CommentService {
 		commentDAO.saveComment(comment);
 	}
 	
+	@Transactional 
+	public void updateComment(Comment comment) {
+		commentDAO.updateComment(comment);
+	}
+	
 	public Comment buildComment(User commenter, String comment) {
 		return commentBuilder.setCommenter(commenter)
 					  		 .setDateTimePosted(new GregorianCalendar())
 					  		 .setComment(comment)
 					  		 .build();
+	}
+	
+	@Transactional(readOnly=true)
+	public Comment loadCommentById(int id) {
+		Comment comment = commentDAO.loadCommentById(id);
+		Hibernate.initialize(comment.getVotes());
+		return comment;
 	}
 }

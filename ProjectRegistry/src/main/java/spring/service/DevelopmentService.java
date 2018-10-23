@@ -1,5 +1,6 @@
 package spring.service;
 
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Component;
@@ -28,10 +29,22 @@ public class DevelopmentService {
 		developmentDAO.saveDevelopment(development);
 	}
 	
+	@Transactional 
+	public void updateDevelopment(Development development) {
+		developmentDAO.updateDevelopment(development);
+	}
+	
 	public Development buildDevelopment(Idea idea, String link, User user) {
 		return developmentBuilder.setDeveloper(user)
 								 .setIdea(idea)
 								 .setLink(link)
 								 .build();
+	}
+	
+	@Transactional(readOnly=true)
+	public Development loadDevelopmentById(int id) {
+		Development development = developmentDAO.loadDevelopmentById(id);
+		Hibernate.initialize(development.getVotes());
+		return development;
 	}
 }

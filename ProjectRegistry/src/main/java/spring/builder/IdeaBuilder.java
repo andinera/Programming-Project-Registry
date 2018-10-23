@@ -7,15 +7,12 @@ import org.springframework.stereotype.Component;
 import spring.model.Idea;
 import spring.model.User;
 
+
 @Component("ideaBuilder")
 public class IdeaBuilder {
 
 	private Idea idea = new Idea();
 	
-	
-	public void setId(final int id) {
-		idea.setId(id);
-	}
 	
 	public void setTitle(final String title) {
 		idea.setTitle(title);

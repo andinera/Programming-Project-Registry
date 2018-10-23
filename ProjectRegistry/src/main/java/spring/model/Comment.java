@@ -6,6 +6,7 @@ import java.util.GregorianCalendar;
 import java.util.Set;
 import java.util.HashSet;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -38,8 +39,9 @@ public class Comment {
 		return this.id;
 	}
 	
-	public void setId(int id) {
+	public Comment setId(int id) {
 		this.id = id;
+		return this;
 	}
 	
 	@ManyToOne(fetch=FetchType.LAZY)
@@ -48,8 +50,9 @@ public class Comment {
 		return this.commenter;
 	}
 	
-	public void setCommenter(User commenter) {
+	public Comment setCommenter(User commenter) {
 		this.commenter = commenter;
+		return this;
 	}
 	
 	@Column(name="dateTimePosted", nullable=false)
@@ -57,8 +60,9 @@ public class Comment {
 		return this.dateTimePosted;
 	}
 	
-	public void setDateTimePosted(GregorianCalendar dateTimePosted) {
+	public Comment setDateTimePosted(GregorianCalendar dateTimePosted) {
 		this.dateTimePosted = dateTimePosted;
+		return this;
 	}
 	
 	@Column(name="comment", nullable=false, length=512)
@@ -66,20 +70,35 @@ public class Comment {
 		return this.comment;
 	}
 	
-	public void setComment(String comment) {
+	public Comment setComment(String comment) {
 		this.comment = comment;
+		return this;
 	}
 	
-	@OneToMany(fetch=FetchType.LAZY, mappedBy="comment")
+	@OneToMany(fetch=FetchType.LAZY, mappedBy="comment", cascade=CascadeType.ALL)
 	public Set<CommentVote> getVotes() {
 		return this.votes;
 	}
 	
-	public void setVotes(Set<CommentVote> votes) {
+	public Comment setVotes(Set<CommentVote> votes) {
 		this.votes = votes;
+		return this;
 	}
 	
-	public int numVotes() {
-		return this.getVotes().size();
+	public Comment addVote(CommentVote vote) {
+		this.getVotes().add(vote);
+		return this;
+	}
+	
+	public int voteCount() {
+		int count = 0;
+		for (CommentVote vote : this.getVotes()) {
+			if (vote.getUpVote()) {
+				count++;
+			} else {
+				count --;
+			}
+		}
+		return count;
 	}
 }

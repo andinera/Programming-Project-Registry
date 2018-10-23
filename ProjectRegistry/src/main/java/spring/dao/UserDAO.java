@@ -19,10 +19,12 @@ public class UserDAO {
 	
 	
 	public void createUser(User user) {
-		sessionFactory.getCurrentSession().save(user);
-		Set<UserRole> userRoles = user.getUserRoles();
-		for (UserRole userRole : userRoles) {
-			sessionFactory.getCurrentSession().save(userRole);
+		if (loadUserByUsername(user.getUsername()) != null) {
+			sessionFactory.getCurrentSession().save(user);
+			Set<UserRole> userRoles = user.getUserRoles();
+			for (UserRole userRole : userRoles) {
+				sessionFactory.getCurrentSession().save(userRole);
+			}
 		}
 	}
 	

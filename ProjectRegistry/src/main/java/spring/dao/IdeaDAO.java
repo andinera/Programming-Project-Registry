@@ -1,6 +1,7 @@
 package spring.dao;
 
 import java.util.List;
+import java.util.GregorianCalendar;
 
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,11 +28,20 @@ public class IdeaDAO {
 	@SuppressWarnings("unchecked")
 	public Idea loadIdeaById(int id) {
 		List<Idea> ideas = sessionFactory.getCurrentSession()
-				.createQuery("from Idea where id=:id")
-				.setParameter("id",  id)
+									 	 .createQuery("from Idea where id=:id")
+										 .setParameter("id",  id)
+										 .list();
+		return ideas.get(0);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Idea> loadIdeasByFilter(GregorianCalendar startDate, GregorianCalendar stopDate) {
+		List<Idea> ideas = sessionFactory.getCurrentSession()
+				.createQuery("from Idea where datePosted between :startDate and :stopDate")
+				.setParameter("startDate",  startDate)
+				.setParameter("stopDate", stopDate)
 				.list();
-		Idea idea = ideas.get(0);
-		return idea;
+		return ideas;
 	}
 	
 	@SuppressWarnings("unchecked")
