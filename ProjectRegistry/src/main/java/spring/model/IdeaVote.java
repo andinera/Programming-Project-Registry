@@ -15,7 +15,12 @@ public class IdeaVote extends Vote {
 	private Idea idea;
 	
 	
-	public IdeaVote() {
+	private IdeaVote() {
+	}
+	
+	public IdeaVote(User voter, boolean upVote, Idea idea) {
+		super(voter, upVote);
+		setIdea(idea);
 	}
 	
 	@ManyToOne(fetch=FetchType.LAZY)
@@ -24,7 +29,7 @@ public class IdeaVote extends Vote {
 		return this.idea;
 	}
 	
-	public void setIdea(Idea idea) {
+	private void setIdea(Idea idea) {
 		this.idea = idea;
 	}
 }

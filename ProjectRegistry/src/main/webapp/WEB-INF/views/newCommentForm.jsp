@@ -17,7 +17,7 @@
 		<table>
 			<tr>
 				<td>Comment:</td>
-				<td><textarea name='comment' value=''></textarea>
+				<td><textarea name='comment'></textarea>
 			</tr>
 			<tr>
 				<td><input name="submit" type="submit" value="submit"/></td>

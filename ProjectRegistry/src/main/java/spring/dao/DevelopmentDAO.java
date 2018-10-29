@@ -16,20 +16,20 @@ public class DevelopmentDAO {
 	private SessionFactory sessionFactory;
 	
 	
-	public void saveDevelopment(Development development) {
+	public void save(Development development) {
 		sessionFactory.getCurrentSession().save(development);
 	}
 	
-	public void updateDevelopment(Development development) {
+	public void update(Development development) {
 		sessionFactory.getCurrentSession().update(development);
 	}
 	
 	@SuppressWarnings("unchecked")
-	public Development loadDevelopmentById(int id) {
+	public Development loadById(int id) {
 		List<Development> developments = sessionFactory.getCurrentSession()
-													  .createQuery("from Development where id=:id")
-													  .setParameter("id",  id)
-													  .list();
+													   .createQuery("from Development where id=:id")
+													   .setParameter("id",  id)
+													   .list();
 		return developments.get(0);
 	}
 }

@@ -19,7 +19,12 @@ abstract public class Vote {
 	private boolean upVote;
 	
 	
-	public Vote() {
+	protected Vote() {
+	}
+	
+	public Vote(User voter, boolean upVote) {
+		setVoter(voter);
+		setUpVote(upVote);
 	}
 
 	@Id
@@ -29,7 +34,7 @@ abstract public class Vote {
 		return this.id;
 	}
 	
-	public void setId(int id) {
+	private void setId(int id) {
 		this.id = id;
 	}
 	
@@ -39,7 +44,7 @@ abstract public class Vote {
 		return this.voter;
 	}
 	
-	public void setVoter(User voter) {
+	private void setVoter(User voter) {
 		this.voter = voter;
 	}
 	

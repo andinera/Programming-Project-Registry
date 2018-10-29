@@ -2,7 +2,7 @@ package spring.model;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
-import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.Set;
 import java.util.HashSet;
 
@@ -25,15 +25,23 @@ public class Idea {
 	private int id;
 	private String title;
 	private String description;
-	private Calendar datePosted;
-	private Calendar dateModified;
+	private GregorianCalendar datePosted;
+	private GregorianCalendar dateModified;
 	private User poster;
 	private Set<IdeaVote> votes = new HashSet<IdeaVote>(0);
 	private Set<Development> developments = new HashSet<Development>(0);
 	private Set<Comment> comments = new HashSet<Comment>(0);
 	
 	
-	public Idea() {	
+	private Idea() {	
+	}
+	
+	public Idea(String title, String description, User poster, GregorianCalendar datePosted) {
+		setTitle(title);
+		setDescription(description);
+		setPoster(poster);
+		setDatePosted(datePosted);
+		setDateModified(datePosted);
 	}
 	
 	@Id
@@ -43,7 +51,7 @@ public class Idea {
 		return this.id;
 	}
 	
-	public Idea setId(int id) {
+	private Idea setId(int id) {
 		this.id = id;
 		return this;
 	}
@@ -69,32 +77,32 @@ public class Idea {
 	}
 	
 	@Column(name="datePosted", nullable=false)
-	public Calendar getDatePosted() {
+	public GregorianCalendar getDatePosted() {
 		return this.datePosted;
 	}
 	
-	public Idea setDatePosted(Calendar datePosted) {
+	private Idea setDatePosted(GregorianCalendar datePosted) {
 		this.datePosted = datePosted;
 		return this;
 	}
 	
 	@Column(name="dateModified", nullable=false)
-	public Calendar getDateModified() {
+	public GregorianCalendar getDateModified() {
 		return this.dateModified;
 	}
 	
-	public Idea setDateModified(Calendar dateModified) {
+	public Idea setDateModified(GregorianCalendar dateModified) {
 		this.dateModified = dateModified;
 		return this;
 	}
 	
-	@ManyToOne(fetch=FetchType.LAZY)
+	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="username", nullable=false)
 	public User getPoster() {
 		return this.poster;
 	}
 	
-	public Idea setPoster(User poster) {
+	private Idea setPoster(User poster) {
 		this.poster = poster;
 		return this;
 	}
@@ -104,12 +112,19 @@ public class Idea {
 		return this.votes;
 	}
 	
-	public Idea setVotes(Set<IdeaVote> votes) {
+	private Idea setVotes(Set<IdeaVote> votes) {
 		this.votes = votes;
 		return this;
 	}
 	
 	public Idea addVote(IdeaVote vote) {
+		for (IdeaVote v : getVotes()) {
+			if (v.getVoter().getUsername().equals(vote.getVoter().getUsername())
+					&& v.getIdea().getId() == vote.getIdea().getId()) {
+				v.setUpVote(vote.getUpVote());
+				return this;
+			}
+		}
 		this.getVotes().add(vote);
 		return this;
 	}
@@ -131,7 +146,7 @@ public class Idea {
 		return this.developments;
 	}
 	
-	public Idea setDevelopments(Set<Development> developments) {
+	private Idea setDevelopments(Set<Development> developments) {
 		this.developments = developments;
 		return this;
 	}
@@ -147,7 +162,7 @@ public class Idea {
 		return this.comments;
 	}
 	
-	public Idea setComments(Set<Comment> comments) {
+	private Idea setComments(Set<Comment> comments) {
 		this.comments = comments;
 		return this;
 	}

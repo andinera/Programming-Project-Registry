@@ -1,17 +1,14 @@
 package spring.service;
 
 import java.util.List;
-import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Date;
 
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import spring.builder.IdeaBuilder;
 import spring.dao.IdeaDAO;
 import spring.model.Idea;
 import spring.model.User;
@@ -20,40 +17,29 @@ import spring.model.Comment;
 
 
 @Component("ideaService")
-@ComponentScan("spring.builder")
 public class IdeaService {
-
-	@Autowired
-	public IdeaBuilder ideaBuilder;
 	
 	@Autowired
-	private IdeaDAO ideaDAO;
+	private IdeaDAO dao;
 
 	
 	@Transactional
-	public int saveIdea(Idea idea) {
-		return ideaDAO.saveIdea(idea);
+	public int save(Idea idea) {
+		return dao.save(idea);
 	}
 	
 	@Transactional
-	public void updateIdea(Idea idea) {
-		ideaDAO.updateIdea(idea);
+	public void update(Idea idea) {
+		dao.update(idea);
 	}
 	
-	public Idea buildIdea(String title, String description, User poster) {
-		ideaBuilder.setTitle(title);
-		ideaBuilder.setDescription(description);
-		ideaBuilder.setPoster(poster);
-		Calendar datePosted = new GregorianCalendar();
-		ideaBuilder.setDatePosted(datePosted);
-		ideaBuilder.setDateModified(datePosted);
-		return ideaBuilder.build();
+	public Idea create(String title, String description, User poster) {
+		return new Idea(title, description, poster, new GregorianCalendar());
 	}
 	
 	@Transactional(readOnly=true)
-	public Idea loadIdeaById(int id) {
-		Idea idea = ideaDAO.loadIdeaById(id);
-		Hibernate.initialize(idea.getPoster());
+	public Idea loadById(int id) {
+		Idea idea = dao.loadById(id);
 		Hibernate.initialize(idea.getVotes());
 		Hibernate.initialize(idea.getDevelopments());
 		for(Development development : idea.getDevelopments()) {
@@ -70,12 +56,12 @@ public class IdeaService {
 	}
 	
 	@Transactional(readOnly=true)
-	public List<Idea> loadIdeasByFilter(Date startDate, Date stopDate) {
+	public List<Idea> loadByFilter(Date startDate, Date stopDate) {
 		GregorianCalendar startCal = new GregorianCalendar();
 		startCal.setTime(startDate);
 		GregorianCalendar stopCal = new GregorianCalendar();
 		stopCal.setTime(stopDate);
-		List<Idea> ideas = ideaDAO.loadIdeasByFilter(startCal, stopCal);
+		List<Idea> ideas = dao.loadByFilter(startCal, stopCal);
 		for (Idea idea: ideas) {
 			Hibernate.initialize(idea.getPoster());
 			Hibernate.initialize(idea.getVotes());
@@ -84,8 +70,8 @@ public class IdeaService {
 	}
 	
 	@Transactional(readOnly=true)
-	public List<Idea> loadAllIdeas() {
-		List<Idea> ideas = ideaDAO.loadAllIdeas();
+	public List<Idea> loadAll() {
+		List<Idea> ideas = dao.loadAll();
 		for (Idea idea: ideas) {
 			Hibernate.initialize(idea.getPoster());
 			Hibernate.initialize(idea.getVotes());

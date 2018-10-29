@@ -4,47 +4,38 @@ import java.util.GregorianCalendar;
 
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import spring.dao.CommentDAO;
-import spring.builder.CommentBuilder;
 import spring.model.Comment;
 import spring.model.User;
 
 
 @Component("commentService")
-@ComponentScan("spring.builder")
 public class CommentService {
-
-	@Autowired
-	private CommentBuilder commentBuilder;
 	
 	@Autowired
-	private CommentDAO commentDAO;
+	private CommentDAO dao;
 	
 	
 	@Transactional
-	public void saveComment(Comment comment) {
-		commentDAO.saveComment(comment);
+	public void save(Comment comment) {
+		dao.save(comment);
 	}
 	
 	@Transactional 
-	public void updateComment(Comment comment) {
-		commentDAO.updateComment(comment);
+	public void update(Comment comment) {
+		dao.update(comment);
 	}
 	
-	public Comment buildComment(User commenter, String comment) {
-		return commentBuilder.setCommenter(commenter)
-					  		 .setDateTimePosted(new GregorianCalendar())
-					  		 .setComment(comment)
-					  		 .build();
+	public Comment create(User commenter, String comment) {
+		return new Comment(commenter, new GregorianCalendar(), comment);
 	}
 	
 	@Transactional(readOnly=true)
-	public Comment loadCommentById(int id) {
-		Comment comment = commentDAO.loadCommentById(id);
+	public Comment loadById(int id) {
+		Comment comment = dao.loadById(id);
 		Hibernate.initialize(comment.getVotes());
 		return comment;
 	}

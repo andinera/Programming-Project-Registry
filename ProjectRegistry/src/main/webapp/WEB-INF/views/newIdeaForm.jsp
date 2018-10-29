@@ -21,7 +21,7 @@
 			</tr>
 			<tr>
 				<td>Description:</td>
-				<td><textarea name='description' value=''></textarea>
+				<td><textarea name='description'></textarea>
 			</tr>
 			<tr>
 				<td colspan='1'><input name="submit" type="submit" value="submit"/></td>

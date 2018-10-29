@@ -18,8 +18,8 @@ public class UserDAO {
 	private SessionFactory sessionFactory;
 	
 	
-	public void createUser(User user) {
-		if (loadUserByUsername(user.getUsername()) != null) {
+	public void save(User user) {
+		if (loadByUsername(user.getUsername()) != null) {
 			sessionFactory.getCurrentSession().save(user);
 			Set<UserRole> userRoles = user.getUserRoles();
 			for (UserRole userRole : userRoles) {
@@ -28,12 +28,12 @@ public class UserDAO {
 		}
 	}
 	
-	public void updateUser(User user) {
+	public void update(User user) {
 		sessionFactory.getCurrentSession().update(user);
 	}
 	
 	@SuppressWarnings("unchecked")
-	public User loadUserByUsername(String username) {
+	public User loadByUsername(String username) {
 		List<User> users = new ArrayList<User>();
 		
 		users = sessionFactory.getCurrentSession()
@@ -49,7 +49,7 @@ public class UserDAO {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public List<User> loadUsersBySearch(String search) {
+	public List<User> loadBySearch(String search) {
 		List<User> users = sessionFactory.getCurrentSession()
 					.createQuery("from User where username like :keyword")
 					.setParameter("keyword", "%" + search + "%")

@@ -15,7 +15,12 @@ public class CommentVote extends Vote {
 	private Comment comment;
 	
 	
-	public CommentVote() {
+	private CommentVote() {
+	}
+	
+	public CommentVote(User voter, boolean upVote, Comment comment) {
+		super(voter, upVote);
+		setComment(comment);
 	}
 	
 	@ManyToOne(fetch=FetchType.LAZY)
@@ -24,7 +29,7 @@ public class CommentVote extends Vote {
 		return this.comment;
 	}
 	
-	public void setComment(Comment comment) {
+	private void setComment(Comment comment) {
 		this.comment = comment;
 	}
 }

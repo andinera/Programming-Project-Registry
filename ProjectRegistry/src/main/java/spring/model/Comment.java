@@ -28,8 +28,13 @@ public class Comment {
 	private String comment;
 	private Set<CommentVote> votes = new HashSet<CommentVote>(0);
 
+	private Comment() {
+	}
 	
-	public Comment() {
+	public Comment(User commenter, GregorianCalendar dateTimePosted, String comment) {
+		setCommenter(commenter);
+		setDateTimePosted(dateTimePosted);
+		setComment(comment);
 	}
 	
 	@Id
@@ -39,18 +44,18 @@ public class Comment {
 		return this.id;
 	}
 	
-	public Comment setId(int id) {
+	private Comment setId(int id) {
 		this.id = id;
 		return this;
 	}
 	
-	@ManyToOne(fetch=FetchType.LAZY)
+	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="username", nullable=false)
 	public User getCommenter() {
 		return this.commenter;
 	}
 	
-	public Comment setCommenter(User commenter) {
+	private Comment setCommenter(User commenter) {
 		this.commenter = commenter;
 		return this;
 	}
@@ -60,7 +65,7 @@ public class Comment {
 		return this.dateTimePosted;
 	}
 	
-	public Comment setDateTimePosted(GregorianCalendar dateTimePosted) {
+	private Comment setDateTimePosted(GregorianCalendar dateTimePosted) {
 		this.dateTimePosted = dateTimePosted;
 		return this;
 	}
@@ -80,7 +85,7 @@ public class Comment {
 		return this.votes;
 	}
 	
-	public Comment setVotes(Set<CommentVote> votes) {
+	private Comment setVotes(Set<CommentVote> votes) {
 		this.votes = votes;
 		return this;
 	}

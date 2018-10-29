@@ -7,7 +7,6 @@ import java.util.Set;
 
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.User;
@@ -15,31 +14,22 @@ import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import spring.builder.UserBuilder;
 import spring.dao.UserDAO;
 import spring.model.Idea;
 import spring.model.Development;
 
 @Component("userService")
-@ComponentScan("spring.builder")
 public class UserService {
-	
-	@Autowired
-	private UserBuilder userBuilder;
 	
 	@Autowired
 	private UserDetailsManager userDetailsService;
 	
 	@Autowired
-	private UserDAO userDAO;
+	private UserDAO dao;
 	
-	
-	public spring.model.User buildUser() {
-		return userBuilder.build();
-	}
 	
 	@Transactional
-	public void saveUser(String username, String password) {
+	public void save(String username, String password) {
 		Set<GrantedAuthority> setAuths = new HashSet<GrantedAuthority>();
 		List<GrantedAuthority> result = new ArrayList<GrantedAuthority>(setAuths);
 		
@@ -52,22 +42,26 @@ public class UserService {
 	}
 	
 	@Transactional
-	public void updateUser(spring.model.User user) {
+	public void update(spring.model.User user) {
 		Hibernate.initialize(user.getUserRoles());
 		Hibernate.initialize(user.getIdeas());
 		Hibernate.initialize(user.getDevelopments());
-		userDAO.updateUser(user);
+		dao.update(user);
+	}
+	
+	public spring.model.User create() {
+		return new spring.model.User();
 	}
 	
 	@Transactional(readOnly=true)
-	public List<spring.model.User> loadUsersBySearch(String search) {
-		List<spring.model.User> users = userDAO.loadUsersBySearch(search);
+	public List<spring.model.User> loadBySearch(String search) {
+		List<spring.model.User> users = dao.loadBySearch(search);
 		return users;
 	}
 	
 	@Transactional(readOnly=true)
-	public spring.model.User loadUserByUsername(String username) {
-		spring.model.User user = userDAO.loadUserByUsername(username);
+	public spring.model.User loadByUsername(String username) {
+		spring.model.User user = dao.loadByUsername(username);
 		Hibernate.initialize(user.getUserRoles());
 		Hibernate.initialize(user.getIdeas());
 		for(Idea idea : user.getIdeas()) {
@@ -76,7 +70,6 @@ public class UserService {
 		Hibernate.initialize(user.getDevelopments());
 		for(Development development : user.getDevelopments()) {
 			Hibernate.initialize(development.getVotes());
-			Hibernate.initialize(development.getIdea());
 		}
 		return user;
 	}

@@ -39,7 +39,7 @@ public class ViewController {
 	@GetMapping({"/", "/home"})
 	public ModelAndView home() {
 		ModelAndView model = new ModelAndView();
-		model.addObject("ideas", ideaService.loadAllIdeas());
+		model.addObject("ideas", ideaService.loadAll());
 		model.setViewName("home");
 		return model;
 	}
@@ -48,7 +48,7 @@ public class ViewController {
 	public ModelAndView filterHomeByDate(@RequestParam(value="startDate", required=false) @DateTimeFormat(pattern="yyy-MM-dd") Date startDate,
 										 @RequestParam(value="stopDate", required=false) @DateTimeFormat(pattern="yyy-MM-dd") Date stopDate) {
 		ModelAndView model = new ModelAndView();
-		model.addObject("ideas", ideaService.loadIdeasByFilter(startDate, stopDate));
+		model.addObject("ideas", ideaService.loadByFilter(startDate, stopDate));
 		model.setViewName("home");
 		return model;
 	}
@@ -72,7 +72,7 @@ public class ViewController {
 									HttpServletRequest request) {
 		ModelAndView model = new ModelAndView();
 		session.setAttribute("previousView", request.getHeader("Referer"));
-		model.addObject("user", userService.buildUser());
+		model.addObject("user", userService.create());
 		model.setViewName("newUserForm");
 		return model;
 	}
@@ -82,7 +82,7 @@ public class ViewController {
 								@RequestParam(value="password", required=true) String password,
 								HttpSession session) {
 		RedirectView view = new RedirectView();
-		userService.saveUser(username, password);
+		userService.save(username, password);
 		view.setUrl((String)session.getAttribute("previousView"));
 		view.setContextRelative(true);
 		session.removeAttribute("previousView");
@@ -93,7 +93,7 @@ public class ViewController {
 	public ModelAndView usersearch(@RequestParam(value="search", required=true) String search) {
 		ModelAndView model = new ModelAndView();
 		model.addObject("keyword", search);
-		model.addObject("users", userService.loadUsersBySearch(search));
+		model.addObject("users", userService.loadBySearch(search));
 		model.setViewName("userSearch");
 		return model;
 	}
@@ -101,7 +101,7 @@ public class ViewController {
 	@GetMapping("/user/profile")
 	public ModelAndView userProfile(@RequestParam(value="username", required=true) String username) {
 		ModelAndView model = new ModelAndView();
-		User user = userService.loadUserByUsername(username);
+		User user = userService.loadByUsername(username);
 		model.addObject("user", user);
 		model.setViewName("userProfile");
 		return model;
@@ -119,9 +119,9 @@ public class ViewController {
 								@RequestParam(value="description", required=true) String description,
 								HttpServletRequest request) {
 		RedirectView view = new RedirectView();
-		User user = userService.loadUserByUsername(request.getUserPrincipal().getName());
-		Idea idea = ideaService.buildIdea(title, description, user);
-		userService.updateUser(user.addIdea(idea));
+		User user = userService.loadByUsername(request.getUserPrincipal().getName());
+		Idea idea = ideaService.create(title, description, user);
+		userService.update(user.addIdea(idea));
 		view.setUrl("/home");
 		view.setContextRelative(true);
 		return view;
@@ -131,7 +131,7 @@ public class ViewController {
 	public ModelAndView loadIdeaById(@RequestParam(value="id", required=true) int id,
 									 HttpSession session) {
 		ModelAndView model = new ModelAndView();
-		Idea idea = ideaService.loadIdeaById(id);
+		Idea idea = ideaService.loadById(id);
 		model.addObject("idea", idea);
 		model.setViewName("idea");
 		session.setAttribute("ideaId", id);
@@ -143,11 +143,11 @@ public class ViewController {
 								   HttpSession session,
 							   	   HttpServletRequest request) {
 		RedirectView view = new RedirectView();
-		User voter = userService.loadUserByUsername(request.getUserPrincipal().getName());
-		Idea idea = ideaService.loadIdeaById((int)session.getAttribute("ideaId"));
-		IdeaVote vote = voteService.buildVote(voter, Boolean.valueOf(upVote), idea);
+		User voter = userService.loadByUsername(request.getUserPrincipal().getName());
+		Idea idea = ideaService.loadById((int)session.getAttribute("ideaId"));
+		IdeaVote vote = voteService.create(voter, Boolean.valueOf(upVote), idea);
 		idea.addVote(vote);
-		ideaService.updateIdea(idea);
+		ideaService.update(idea);
 		view.setUrl("/idea?id=" + Integer.toString((int)session.getAttribute("ideaId")));
 		view.setContextRelative(true);
 		session.removeAttribute("ideaId");
@@ -166,13 +166,13 @@ public class ViewController {
 									   HttpSession session,
 									   HttpServletRequest request) {
 		RedirectView view = new RedirectView();
-		User user = userService.loadUserByUsername(request.getUserPrincipal().getName());
-		Idea idea = ideaService.loadIdeaById((int)session.getAttribute("ideaId"));
-		Development development = developmentService.buildDevelopment(idea, link, user);
+		User user = userService.loadByUsername(request.getUserPrincipal().getName());
+		Idea idea = ideaService.loadById((int)session.getAttribute("ideaId"));
+		Development development = developmentService.create(idea, link, user);
 		idea.addDevelopment(development);
 		user.addDevelopment(development);
-		ideaService.updateIdea(idea);
-		userService.updateUser(user);
+		ideaService.update(idea);
+		userService.update(user);
 		view.setUrl("/idea?id=" + Integer.toString((int)session.getAttribute("ideaId")));
 		view.setContextRelative(true);
 		session.removeAttribute("ideaId");
@@ -181,15 +181,15 @@ public class ViewController {
 	
 	@PostMapping("/development/new/vote")
 	public RedirectView developmentVote(@RequestParam(value="upVote", required=true) String upVote,
-								   @RequestParam(value="developmentId", required=true) String developmentId,
-								   HttpSession session,
-							   	   HttpServletRequest request) {
+								   		@RequestParam(value="developmentId", required=true) String developmentId,
+								   		HttpSession session,
+								   		HttpServletRequest request) {
 		RedirectView view = new RedirectView();
-		User voter = userService.loadUserByUsername(request.getUserPrincipal().getName());
-		Development development = developmentService.loadDevelopmentById(Integer.parseInt(developmentId));
-		DevelopmentVote vote = voteService.buildVote(voter, Boolean.valueOf(upVote), development);
+		User voter = userService.loadByUsername(request.getUserPrincipal().getName());
+		Development development = developmentService.loadById(Integer.parseInt(developmentId));
+		DevelopmentVote vote = voteService.create(voter, Boolean.valueOf(upVote), development);
 		development.addVote(vote);
-		developmentService.updateDevelopment(development);
+		developmentService.update(development);
 		view.setUrl("/idea?id=" + Integer.toString((int)session.getAttribute("ideaId")));
 		view.setContextRelative(true);
 		session.removeAttribute("ideaId");
@@ -208,11 +208,11 @@ public class ViewController {
 								   HttpSession session,
 								   HttpServletRequest request) {
 		RedirectView view = new RedirectView();
-		Idea idea = ideaService.loadIdeaById((int)session.getAttribute("ideaId"));
-		User commenter = userService.loadUserByUsername(request.getUserPrincipal().getName());
-		Comment c = commentService.buildComment(commenter, comment);
+		Idea idea = ideaService.loadById((int)session.getAttribute("ideaId"));
+		User commenter = userService.loadByUsername(request.getUserPrincipal().getName());
+		Comment c = commentService.create(commenter, comment);
 		idea.addComment(c);
-		ideaService.updateIdea(idea);
+		ideaService.update(idea);
 		view.setUrl("/idea?id=" + Integer.toString((int)session.getAttribute("ideaId")));
 		view.setContextRelative(true);
 		session.removeAttribute("ideaId");
@@ -225,11 +225,11 @@ public class ViewController {
 								   HttpSession session,
 							   	   HttpServletRequest request) {
 		RedirectView view = new RedirectView();
-		User voter = userService.loadUserByUsername(request.getUserPrincipal().getName());
-		Comment comment = commentService.loadCommentById(Integer.parseInt(commentId));
-		CommentVote vote = voteService.buildVote(voter, Boolean.valueOf(upVote), comment);
+		User voter = userService.loadByUsername(request.getUserPrincipal().getName());
+		Comment comment = commentService.loadById(Integer.parseInt(commentId));
+		CommentVote vote = voteService.create(voter, Boolean.valueOf(upVote), comment);
 		comment.addVote(vote);
-		commentService.updateComment(comment);
+		commentService.update(comment);
 		view.setUrl("/idea?id=" + Integer.toString((int)session.getAttribute("ideaId")));
 		view.setContextRelative(true);
 		session.removeAttribute("ideaId");

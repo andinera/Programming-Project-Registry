@@ -17,16 +17,16 @@ public class IdeaDAO {
 	private SessionFactory sessionFactory;
 	
 	
-	public int saveIdea(Idea idea) {
+	public int save(Idea idea) {
 		return (int)sessionFactory.getCurrentSession().save(idea);
 	}
 	
-	public void updateIdea(Idea idea) {
+	public void update(Idea idea) {
 		sessionFactory.getCurrentSession().update(idea);
 	}
 
 	@SuppressWarnings("unchecked")
-	public Idea loadIdeaById(int id) {
+	public Idea loadById(int id) {
 		List<Idea> ideas = sessionFactory.getCurrentSession()
 									 	 .createQuery("from Idea where id=:id")
 										 .setParameter("id",  id)
@@ -35,7 +35,7 @@ public class IdeaDAO {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public List<Idea> loadIdeasByFilter(GregorianCalendar startDate, GregorianCalendar stopDate) {
+	public List<Idea> loadByFilter(GregorianCalendar startDate, GregorianCalendar stopDate) {
 		List<Idea> ideas = sessionFactory.getCurrentSession()
 				.createQuery("from Idea where datePosted between :startDate and :stopDate")
 				.setParameter("startDate",  startDate)
@@ -45,7 +45,7 @@ public class IdeaDAO {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public List<Idea> loadAllIdeas() {
+	public List<Idea> loadAll() {
 		List<Idea> ideas = sessionFactory.getCurrentSession()
 				.createQuery("from Idea")
 				.list();

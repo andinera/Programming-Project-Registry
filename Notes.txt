@@ -1,13 +1,4 @@
 
-Programming project registry
+Try to merge the branches into 1. Maybe utilize generics. Maybe pass in builders and DAO, etc...
+Implement interfaces.
 
-Similar to UpWork but all free, all open-source
-Project description is available on posting
-
-Post programs/applications you wish others would make
-Search for programs/applications others want made
-Search results can be filtered by date, keyword, technology, difficulty, time, etc
-    Similar to UpWork
-View individual programs/applications
-Individuals can mark a program/application as being developed
-Individuals could provide a link to their source code/website/etc

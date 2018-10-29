@@ -23,7 +23,7 @@ import spring.model.UserRole;
 public class UserDetailsService implements UserDetailsManager {
 
 	@Autowired
-	private UserDAO userDAO;
+	private UserDAO dao;
 	
 	@Autowired 
 	private PasswordEncoder passwordEncoder;
@@ -36,13 +36,13 @@ public class UserDetailsService implements UserDetailsManager {
 										  			   passwordEncoder.encode(userDetails.getPassword()),
 										  			   userDetails.isEnabled());
 		user.addUserRole(new UserRole(user, "ROLE_IDEATER"));
-		userDAO.createUser(user);
+		dao.save(user);
 	}
 	
 	@Override
 	@Transactional(readOnly=true)
 	public UserDetails loadUserByUsername(final String username) throws UsernameNotFoundException {
-		spring.model.User user = userDAO.loadUserByUsername(username);
+		spring.model.User user = dao.loadByUsername(username);
 		List<GrantedAuthority> authorities = buildUserAuthority(user.getUserRoles());
 		return buildUserForAuthentication(user, authorities);
 	}
@@ -61,22 +61,18 @@ public class UserDetailsService implements UserDetailsManager {
 	}
 
 	public void updateUser(UserDetails user) {
-		// TODO Auto-generated method stub
 		
 	}
 
 	public void deleteUser(String username) {
-		// TODO Auto-generated method stub
 		
 	}
 
 	public void changePassword(String oldPassword, String newPassword) {
-		// TODO Auto-generated method stub
 		
 	}
 
 	public boolean userExists(String username) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 }

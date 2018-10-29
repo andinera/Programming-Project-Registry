@@ -15,7 +15,12 @@ public class DevelopmentVote extends Vote {
 	private Development development;
 	
 	
-	public DevelopmentVote() {
+	private DevelopmentVote() {
+	}
+	
+	public DevelopmentVote(User voter, boolean upVote, Development development) {
+		super(voter, upVote);
+		setDevelopment(development);
 	}
 	
 	@ManyToOne(fetch=FetchType.LAZY)
@@ -24,7 +29,7 @@ public class DevelopmentVote extends Vote {
 		return this.development;
 	}
 	
-	public void setDevelopment(Development development) {
+	private void setDevelopment(Development development) {
 		this.development = development;
 	}
 }

@@ -29,6 +29,15 @@ public class Development {
 	private Set<DevelopmentVote> votes = new HashSet<DevelopmentVote>(0);
 
 	
+	private Development() {
+	}
+	
+	public Development(User developer, Idea idea, String link) {
+		setDeveloper(developer);
+		setIdea(idea);
+		setLink(link);
+	}
+	
 	@Id
 	@GeneratedValue(strategy=IDENTITY)
 	@Column(name="id", unique=true, nullable=false)
@@ -36,18 +45,18 @@ public class Development {
 		return this.id;
 	}
 	
-	public Development setId(int id) {
+	private Development setId(int id) {
 		this.id = id;
 		return this;
 	}
 	
-	@ManyToOne(fetch=FetchType.LAZY)
+	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="ideaId", referencedColumnName="id", nullable=false)
 	public Idea getIdea() {
 		return this.idea;
 	}
 	
-	public Development setIdea(Idea idea) {
+	private Development setIdea(Idea idea) {
 		this.idea = idea;
 		return this;
 	}
@@ -62,13 +71,13 @@ public class Development {
 		return this;
 	}
 	
-	@ManyToOne(fetch=FetchType.LAZY)
+	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="username", nullable=false)
 	public User getDeveloper() {
 		return this.developer;
 	}
 	
-	public Development setDeveloper(User developer) {
+	private Development setDeveloper(User developer) {
 		this.developer = developer;
 		return this;
 	}
@@ -78,7 +87,7 @@ public class Development {
 		return this.votes;
 	}
 	
-	public Development setVotes(Set<DevelopmentVote> votes) {
+	private Development setVotes(Set<DevelopmentVote> votes) {
 		this.votes = votes;
 		return this;
 	}

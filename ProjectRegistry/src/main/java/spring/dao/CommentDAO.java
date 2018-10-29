@@ -15,16 +15,16 @@ public class CommentDAO {
 	private SessionFactory sessionFactory;
 	
 	
-	public void saveComment(Comment comment) {
+	public void save(Comment comment) {
 		sessionFactory.getCurrentSession().save(comment);
 	}
 	
-	public void updateComment(Comment comment) {
+	public void update(Comment comment) {
 		sessionFactory.getCurrentSession().update(comment);
 	}
 	
 	@SuppressWarnings("unchecked")
-	public Comment loadCommentById(int id) {
+	public Comment loadById(int id) {
 		List<Comment> comments = sessionFactory.getCurrentSession()
 											   .createQuery("from Comment where id=:id")
 											   .setParameter("id",  id)
