@@ -3,8 +3,8 @@ package spring.model;
 import static javax.persistence.GenerationType.IDENTITY;
 
 import java.util.GregorianCalendar;
-import java.util.Set;
-import java.util.HashSet;
+import java.util.List;
+import java.util.ArrayList;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -28,9 +28,9 @@ public class Idea {
 	private GregorianCalendar datePosted;
 	private GregorianCalendar dateModified;
 	private User poster;
-	private Set<IdeaVote> votes = new HashSet<IdeaVote>(0);
-	private Set<Development> developments = new HashSet<Development>(0);
-	private Set<Comment> comments = new HashSet<Comment>(0);
+	private List<IdeaVote> votes = new ArrayList<IdeaVote>();
+	private List<Development> developments = new ArrayList<Development>();
+	private List<Comment> comments = new ArrayList<Comment>();
 	
 	
 	@SuppressWarnings("unused")
@@ -110,12 +110,12 @@ public class Idea {
 	}
 	
 	@OneToMany(fetch=FetchType.LAZY, mappedBy="idea", cascade=CascadeType.ALL)
-	public Set<IdeaVote> getVotes() {
+	public List<IdeaVote> getVotes() {
 		return this.votes;
 	}
 	
 	@SuppressWarnings("unused")
-	private Idea setVotes(Set<IdeaVote> votes) {
+	private Idea setVotes(List<IdeaVote> votes) {
 		this.votes = votes;
 		return this;
 	}
@@ -145,12 +145,11 @@ public class Idea {
 	}
 	
 	@OneToMany(fetch=FetchType.LAZY, mappedBy="idea", cascade=CascadeType.ALL)
-	public Set<Development> getDevelopments() {
+	public List<Development> getDevelopments() {
 		return this.developments;
 	}
 	
-	@SuppressWarnings("unused")
-	private Idea setDevelopments(Set<Development> developments) {
+	public  Idea setDevelopments(List<Development> developments) {
 		this.developments = developments;
 		return this;
 	}
@@ -162,12 +161,11 @@ public class Idea {
 	
 	@OneToMany(fetch=FetchType.LAZY, cascade=CascadeType.ALL)
 	@JoinColumn(name="comments", nullable=false)
-	public Set<Comment> getComments() {
+	public List<Comment> getComments() {
 		return this.comments;
 	}
 	
-	@SuppressWarnings("unused")
-	private Idea setComments(Set<Comment> comments) {
+	public Idea setComments(List<Comment> comments) {
 		this.comments = comments;
 		return this;
 	}

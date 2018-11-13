@@ -28,6 +28,7 @@ public class Comment {
 	private String comment;
 	private Set<CommentVote> votes = new HashSet<CommentVote>(0);
 
+	@SuppressWarnings("unused")
 	private Comment() {
 	}
 	
@@ -44,6 +45,7 @@ public class Comment {
 		return this.id;
 	}
 	
+	@SuppressWarnings("unused")
 	private Comment setId(int id) {
 		this.id = id;
 		return this;
@@ -85,12 +87,20 @@ public class Comment {
 		return this.votes;
 	}
 	
+	@SuppressWarnings("unused")
 	private Comment setVotes(Set<CommentVote> votes) {
 		this.votes = votes;
 		return this;
 	}
 	
 	public Comment addVote(CommentVote vote) {
+		for (CommentVote v : getVotes()) {
+			if (v.getVoter().getUsername().equals(vote.getVoter().getUsername())
+					&& v.getComment().getId() == vote.getComment().getId()) {
+				v.setUpVote(vote.getUpVote());
+				return this;
+			}
+		}
 		this.getVotes().add(vote);
 		return this;
 	}

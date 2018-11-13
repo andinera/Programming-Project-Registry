@@ -20,15 +20,15 @@
 	</table>
 	<table>
 		<tr>
-			<td>Date</td>
-			<td>Title</td>
-			<td>Votes</td>
+			<td align=center>Date</td>
+			<td align=center>Title</td>
+			<td align=center>Votes</td>
 		</tr>
 		<c:forEach items="${user.getIdeas()}" var="idea">
 			<tr>
 				<td><fmt:formatDate type="date" value="${idea.getDatePosted().getTime()}" /></td>
 				<td><a href="<c:url value='/idea?id=${idea.getId()}' />">${idea.getTitle()}</a></td>
-				<td>${idea.voteCount()}</td>
+				<td align=center>${idea.voteCount()}</td>
 			</tr>
 		</c:forEach>
 	</table>
@@ -39,15 +39,15 @@
 	</table>
 	<table>
 		<tr>
-			<td>Idea</td>
-			<td>Link</td>
-			<td>Votes</td>
+			<td align=center>Idea</td>
+			<td align=center>Link</td>
+			<td align=center>Votes</td>
 		</tr>
 		<c:forEach items="${user.getDevelopments()}" var="development">
 			<tr>
 				<td><a href="<c:url value='/idea?id=${development.getIdea().getId()}' />">${development.getIdea().getTitle()}</a></td>
 				<td>${development.getLink()}</td>
-				<td>${development.voteCount()}</td>
+				<td align=center>${development.voteCount()}</td>
 			</tr>
 		</c:forEach>
 	</table>

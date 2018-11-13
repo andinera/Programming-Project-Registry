@@ -15,6 +15,7 @@ public class CommentVote extends Vote {
 	private Comment comment;
 	
 	
+	@SuppressWarnings("unused")
 	private CommentVote() {
 	}
 	

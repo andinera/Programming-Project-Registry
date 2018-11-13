@@ -2,14 +2,12 @@ package spring.dao;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import spring.model.User;
-import spring.model.UserRole;
 
 @Repository
 public class UserDAO {

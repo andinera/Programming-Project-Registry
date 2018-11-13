@@ -29,6 +29,7 @@ public class Development {
 	private Set<DevelopmentVote> votes = new HashSet<DevelopmentVote>(0);
 
 	
+	@SuppressWarnings("unused")
 	private Development() {
 	}
 	
@@ -45,6 +46,7 @@ public class Development {
 		return this.id;
 	}
 	
+	@SuppressWarnings("unused")
 	private Development setId(int id) {
 		this.id = id;
 		return this;
@@ -87,12 +89,20 @@ public class Development {
 		return this.votes;
 	}
 	
+	@SuppressWarnings("unused")
 	private Development setVotes(Set<DevelopmentVote> votes) {
 		this.votes = votes;
 		return this;
 	}
 	
 	public Development addVote(DevelopmentVote vote) {
+		for (DevelopmentVote v : getVotes()) {
+			if (v.getVoter().getUsername().equals(vote.getVoter().getUsername())
+					&& v.getDevelopment().getId() == vote.getDevelopment().getId()) {
+				v.setUpVote(vote.getUpVote());
+				return this;
+			}
+		}
 		this.getVotes().add(vote);
 		return this;
 	}

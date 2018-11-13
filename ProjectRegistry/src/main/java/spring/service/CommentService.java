@@ -1,6 +1,11 @@
 package spring.service;
 
 import java.util.GregorianCalendar;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpSession;
 
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import spring.dao.CommentDAO;
 import spring.model.Comment;
 import spring.model.User;
+import spring.proxy.Proxy;
 
 
 @Service("commentService")
@@ -17,6 +23,8 @@ public class CommentService {
 	
 	@Autowired
 	private CommentDAO dao;
+	
+	private Map<String, Proxy<Comment>> proxies = new Hashtable<String, Proxy<Comment>>();
 	
 	
 	@Transactional
@@ -38,5 +46,17 @@ public class CommentService {
 		Comment comment = dao.loadById(id);
 		Hibernate.initialize(comment.getVotes());
 		return comment;
+	}
+	
+	public void setProxy(HttpSession session, List<Comment> comments) {
+		proxies.put(session.getId(), new Proxy<Comment>());
+		proxies.get(session.getId()).setData(comments);
+		session.setAttribute("numCommentPages", proxies.get(session.getId()).getNumPages());
+	}
+	
+	public List<Comment> getProxy(HttpSession session, Integer commentPage) {
+		List<Comment> comments = proxies.get(session.getId()).getDataByPage(commentPage);
+		session.setAttribute("commentPage", proxies.get(session.getId()).getPage());
+		return comments;
 	}
 }

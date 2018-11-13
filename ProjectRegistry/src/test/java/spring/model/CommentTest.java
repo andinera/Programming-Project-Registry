@@ -1,6 +1,6 @@
 package spring.model;
 
-import static org.junit.Assert.*;
+//import static org.junit.Assert.*;
 
 import org.junit.Test;
 

@@ -12,7 +12,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import spring.dao.UserDAO;
 import spring.model.Idea;
@@ -28,7 +27,6 @@ public class UserService {
 	private UserDAO dao;
 	
 	
-	@Transactional
 	public void save(String username, String password) {
 		Set<GrantedAuthority> setAuths = new HashSet<GrantedAuthority>();
 		List<GrantedAuthority> result = new ArrayList<GrantedAuthority>(setAuths);
@@ -41,7 +39,6 @@ public class UserService {
 		userDetailsService.createUser(userDetails);
 	}
 	
-	@Transactional
 	public void update(spring.model.User user) {
 		Hibernate.initialize(user.getUserRoles());
 		Hibernate.initialize(user.getIdeas());
@@ -53,13 +50,11 @@ public class UserService {
 		return new spring.model.User();
 	}
 	
-	@Transactional(readOnly=true)
 	public List<spring.model.User> loadBySearch(String search) {
 		List<spring.model.User> users = dao.loadBySearch(search);
 		return users;
 	}
 	
-	@Transactional(readOnly=true)
 	public spring.model.User loadByUsername(String username) {
 		spring.model.User user = dao.loadByUsername(username);
 		Hibernate.initialize(user.getUserRoles());

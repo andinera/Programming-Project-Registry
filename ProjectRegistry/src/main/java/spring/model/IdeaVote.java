@@ -15,6 +15,7 @@ public class IdeaVote extends Vote {
 	private Idea idea;
 	
 	
+	@SuppressWarnings("unused")
 	private IdeaVote() {
 	}
 	

@@ -15,6 +15,7 @@ public class DevelopmentVote extends Vote {
 	private Development development;
 	
 	
+	@SuppressWarnings("unused")
 	private DevelopmentVote() {
 	}
 	

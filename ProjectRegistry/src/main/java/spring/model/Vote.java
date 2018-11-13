@@ -34,6 +34,7 @@ abstract public class Vote {
 		return this.id;
 	}
 	
+	@SuppressWarnings("unused")
 	private void setId(int id) {
 		this.id = id;
 	}
