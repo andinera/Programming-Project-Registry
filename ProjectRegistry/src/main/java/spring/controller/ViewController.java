@@ -37,9 +37,10 @@ public class ViewController {
 	
 	
 	@GetMapping({"/", "/home"})
-	public ModelAndView home() {
+	public ModelAndView home(@RequestParam(value="page", required=false) Integer page,
+							 HttpSession session) {
 		ModelAndView model = new ModelAndView();
-		model.addObject("ideas", ideaService.loadAll());
+		model.addObject("ideas", ideaService.loadAll(session, page));
 		model.setViewName("home");
 		return model;
 	}

@@ -11,14 +11,14 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.provisioning.UserDetailsManager;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import spring.dao.UserDAO;
 import spring.model.Idea;
 import spring.model.Development;
 
-@Component("userService")
+@Service("userService")
 public class UserService {
 	
 	@Autowired

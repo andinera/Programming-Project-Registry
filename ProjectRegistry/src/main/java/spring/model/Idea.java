@@ -33,6 +33,7 @@ public class Idea {
 	private Set<Comment> comments = new HashSet<Comment>(0);
 	
 	
+	@SuppressWarnings("unused")
 	private Idea() {	
 	}
 	
@@ -51,6 +52,7 @@ public class Idea {
 		return this.id;
 	}
 	
+	@SuppressWarnings("unused")
 	private Idea setId(int id) {
 		this.id = id;
 		return this;
@@ -112,6 +114,7 @@ public class Idea {
 		return this.votes;
 	}
 	
+	@SuppressWarnings("unused")
 	private Idea setVotes(Set<IdeaVote> votes) {
 		this.votes = votes;
 		return this;
@@ -146,6 +149,7 @@ public class Idea {
 		return this.developments;
 	}
 	
+	@SuppressWarnings("unused")
 	private Idea setDevelopments(Set<Development> developments) {
 		this.developments = developments;
 		return this;
@@ -162,6 +166,7 @@ public class Idea {
 		return this.comments;
 	}
 	
+	@SuppressWarnings("unused")
 	private Idea setComments(Set<Comment> comments) {
 		this.comments = comments;
 		return this;

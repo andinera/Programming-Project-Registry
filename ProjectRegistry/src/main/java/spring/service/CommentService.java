@@ -4,7 +4,7 @@ import java.util.GregorianCalendar;
 
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import spring.dao.CommentDAO;
@@ -12,7 +12,7 @@ import spring.model.Comment;
 import spring.model.User;
 
 
-@Component("commentService")
+@Service("commentService")
 public class CommentService {
 	
 	@Autowired

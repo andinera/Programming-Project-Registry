@@ -47,6 +47,15 @@
 				<td>${idea.voteCount()}</td>
 			</tr>
 		</c:forEach>
+		<tr>
+			<td colspan=3 align=center>
+				<a href="<c:url value='/home?page=${page-1}' />">&laquo;</a>
+				<c:forEach begin="1" end="${numPages}" var="page">
+				    <a href="<c:url value='/home?page=${page}' />">${page}</a>
+				</c:forEach>
+				<a href="<c:url value='/home?page=${page+1}' />">&raquo;</a>
+			</td>
+		</tr>
 	</table>
 </body>
 </html>

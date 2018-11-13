@@ -3,10 +3,13 @@ package spring.service;
 import java.util.List;
 import java.util.GregorianCalendar;
 import java.util.Date;
+import java.util.Map;
+import java.util.Hashtable;
 
+import javax.servlet.http.HttpSession;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import spring.dao.IdeaDAO;
@@ -14,13 +17,16 @@ import spring.model.Idea;
 import spring.model.User;
 import spring.model.Development;
 import spring.model.Comment;
+import spring.proxy.Proxy;
 
 
-@Component("ideaService")
+@Service("ideaService")
 public class IdeaService {
 	
 	@Autowired
 	private IdeaDAO dao;
+	
+	private Map<String, Proxy<Idea>> proxies = new Hashtable<String, Proxy<Idea>>();
 
 	
 	@Transactional
@@ -70,12 +76,20 @@ public class IdeaService {
 	}
 	
 	@Transactional(readOnly=true)
-	public List<Idea> loadAll() {
-		List<Idea> ideas = dao.loadAll();
-		for (Idea idea: ideas) {
-			Hibernate.initialize(idea.getPoster());
-			Hibernate.initialize(idea.getVotes());
+	public List<Idea> loadAll(HttpSession session, Integer page) {
+		List<Idea> ideas;
+		if (page == null) {
+			ideas = dao.loadAll();
+			for (Idea idea: ideas) {
+				Hibernate.initialize(idea.getVotes());
+			}
+			proxies.put(session.getId(), new Proxy<Idea>());
+			proxies.get(session.getId()).setData(ideas);
+			session.setAttribute("numPages", proxies.get(session.getId()).getNumPages());
+			page = 1;
 		}
+		ideas = proxies.get(session.getId()).getDataByPage(page);
+		session.setAttribute("page", proxies.get(session.getId()).getPage());
 		return ideas;
 	}
 }

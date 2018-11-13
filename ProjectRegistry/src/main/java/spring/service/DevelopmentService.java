@@ -2,7 +2,7 @@ package spring.service;
 
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import spring.dao.DevelopmentDAO;
@@ -11,7 +11,7 @@ import spring.model.Idea;
 import spring.model.User;
 
 
-@Component("developmentService")
+@Service("developmentService")
 public class DevelopmentService {
 	
 	@Autowired

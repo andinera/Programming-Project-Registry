@@ -1,6 +1,6 @@
 package spring.service;
 
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import spring.model.IdeaVote;
 import spring.model.DevelopmentVote;
@@ -11,7 +11,7 @@ import spring.model.Development;
 import spring.model.Comment;
 
 
-@Component("voteService")
+@Service("voteService")
 public class VoteService {
 	
 	
