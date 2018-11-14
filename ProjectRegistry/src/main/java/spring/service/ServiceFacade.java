@@ -1,5 +1,8 @@
 package spring.service;
 
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
@@ -77,6 +80,20 @@ public class ServiceFacade {
 	}
 	
 	@Transactional
+	public List<Idea> loadIdeasWithDateFilter(HttpSession session, Date startDate, Date stopDate) {
+		GregorianCalendar startCal = new GregorianCalendar();
+		startCal.setTime(startDate);
+		GregorianCalendar stopCal = new GregorianCalendar();
+		stopCal.setTime(stopDate);
+		stopCal.roll(Calendar.HOUR, 23 - stopCal.get(Calendar.HOUR));
+		stopCal.roll(Calendar.MINUTE, 59 - stopCal.get(Calendar.MINUTE));
+		stopCal.roll(Calendar.SECOND, 59 - stopCal.get(Calendar.SECOND));
+		stopCal.roll(Calendar.AM_PM, 1 - stopCal.get(Calendar.AM_PM));
+		ideaService.setProxyWithDateFilter(session, startCal, stopCal);
+		return loadIdeasByProxy(session, 1);
+	}
+	
+	@Transactional
 	public List<Idea> loadIdeasByProxy(HttpSession session, int page) {
 		return ideaService.getProxy(session, page);
 	}
@@ -98,8 +115,13 @@ public class ServiceFacade {
 	}
 	
 	@Transactional
-	public List<User> loadUsersBySearch(String keyword) {
-		return userService.loadBySearch(keyword);
+	public List<User> loadUsersByKeyword(HttpSession session, String keyword) {
+		userService.setProxy(session, keyword);
+		return userService.getProxy(session, 1);
+	}
+	
+	public List<User> loadUsersByKeywordProxy(HttpSession session, int userPage) {
+		return userService.getProxy(session, userPage);
 	}
 	
 	// ### Development ###

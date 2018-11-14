@@ -1,6 +1,7 @@
 package spring.service;
 
 import java.util.List;
+import java.util.Comparator;
 import java.util.GregorianCalendar;
 import java.util.Map;
 import java.util.Hashtable;
@@ -46,26 +47,13 @@ public class IdeaService {
 		return idea;
 	}
 	
-//	@Transactional
-//	public List<Idea> loadByFilter(Date startDate, Date stopDate) {
-//		GregorianCalendar startCal = new GregorianCalendar();
-//		startCal.setTime(startDate);
-//		GregorianCalendar stopCal = new GregorianCalendar();
-//		stopCal.setTime(stopDate);
-//		List<Idea> ideas = dao.loadByFilter(startCal, stopCal);
-//		for (Idea idea: ideas) {
-//			Hibernate.initialize(idea.getPoster());
-//			Hibernate.initialize(idea.getVotes());
-//		}
-//		return ideas;
-//	}
-	
 	@Transactional
 	public void setProxy(HttpSession session) {
 		List<Idea> ideas = dao.loadAll();
 		for (Idea idea: ideas) {
 			Hibernate.initialize(idea.getVotes());
 		}
+		ideas.sort(new IdeaComparator());
 		proxies.put(session.getId(), new Proxy<Idea>());
 		proxies.get(session.getId()).setData(ideas);
 		session.setAttribute("numHomePages", proxies.get(session.getId()).getNumPages());
@@ -75,5 +63,24 @@ public class IdeaService {
 		List<Idea> ideas = proxies.get(session.getId()).getDataByPage(homePage);
 		session.setAttribute("homePage", proxies.get(session.getId()).getPage());
 		return ideas;
+	}
+	
+	@Transactional
+	public void setProxyWithDateFilter(HttpSession session, GregorianCalendar startCal, GregorianCalendar stopCal) {
+		List<Idea> ideas = dao.loadWithDateFilter(startCal, stopCal);
+		for (Idea idea: ideas) {
+			Hibernate.initialize(idea.getVotes());
+		}
+		ideas.sort(new IdeaComparator());
+		proxies.put(session.getId(), new Proxy<Idea>());
+		proxies.get(session.getId()).setData(ideas);
+		session.setAttribute("numHomePages", proxies.get(session.getId()).getNumPages());
+	}
+}
+
+class IdeaComparator implements Comparator<Idea> {
+	@Override
+	public int compare(Idea left, Idea right) {
+		return Integer.compare(right.voteCount(), left.voteCount());
 	}
 }

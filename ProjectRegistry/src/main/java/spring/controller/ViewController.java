@@ -1,10 +1,14 @@
 package spring.controller;
 
 import javax.servlet.http.HttpSession;
+
+import java.util.Date;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -27,16 +31,17 @@ public class ViewController {
 		model.setViewName("home");
 		return model;
 	}
-//	
-////	@GetMapping("/home/filter")
-////	public ModelAndView filterHomeByDate(@RequestParam(value="startDate", required=false) @DateTimeFormat(pattern="yyy-MM-dd") Date startDate,
-////										 @RequestParam(value="stopDate", required=false) @DateTimeFormat(pattern="yyy-MM-dd") Date stopDate) {
-////		ModelAndView model = new ModelAndView();
-////		model.addObject("ideas", ideaService.loadByFilter(startDate, stopDate));
-////		model.setViewName("home");
-////		return model;
-////	}
-//	
+	
+	@PostMapping("/home/filter")
+	public ModelAndView filterHomeByDate(@RequestParam(value="startDate", required=false) @DateTimeFormat(pattern="yyy-MM-dd") Date startDate,
+										 @RequestParam(value="stopDate", required=false) @DateTimeFormat(pattern="yyy-MM-dd") Date stopDate,
+										 HttpSession session) {
+		ModelAndView model = new ModelAndView();
+		model.addObject("ideas", serviceFacade.loadIdeasWithDateFilter(session, startDate, stopDate));
+		model.setViewName("home");
+		return model;
+	}
+	
 	@GetMapping("/home/proxy")
 	public ModelAndView homeProxy(@RequestParam(value="homePage", required=true) Integer homePage,
 			 					  HttpSession session) {
@@ -82,10 +87,20 @@ public class ViewController {
 	}
 	
 	@GetMapping("/user/search")
-	public ModelAndView usersearch(@RequestParam(value="search", required=true) String search) {
+	public ModelAndView userSearch(@RequestParam(value="keyword", required=true) String keyword,
+								   HttpSession session) {
 		ModelAndView model = new ModelAndView();
-		model.addObject("keyword", search);
-		model.addObject("users", serviceFacade.loadUsersBySearch(search));
+		session.setAttribute("keyword", keyword);
+		model.addObject("users", serviceFacade.loadUsersByKeyword(session, keyword));
+		model.setViewName("userSearch");
+		return model;
+	}
+	
+	@GetMapping("/user/search/proxy")
+	public ModelAndView userSearchProxy(@RequestParam(value="userPage", required=true) Integer userPage,
+			 							HttpSession session) {
+		ModelAndView model = new ModelAndView();
+		model.addObject("users", serviceFacade.loadUsersByKeywordProxy(session, userPage));
 		model.setViewName("userSearch");
 		return model;
 	}

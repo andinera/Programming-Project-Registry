@@ -3,15 +3,9 @@ TODO:
 
 Integrate current services and daos into hierarchies using interfaces or abstract classes.
 
-Implement Proxy design pattern for some of the services, so not an excessive number of objects are passed to the users at once.
-
 Implement Flyweight design pattern for user roles so duplicate user roles aren't created and stored in the database.
 
-Implement Factory Method design pattern for each object.
-
 Document code using Javadoc.
-
-Fix bugs (voting x2, catch hibernate errors, other exceptions).
 
 
 

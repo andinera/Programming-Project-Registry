@@ -1,5 +1,6 @@
 package spring.service;
 
+import java.util.Comparator;
 import java.util.GregorianCalendar;
 import java.util.Hashtable;
 import java.util.List;
@@ -49,6 +50,7 @@ public class CommentService {
 	}
 	
 	public void setProxy(HttpSession session, List<Comment> comments) {
+		comments.sort(new CommentComparator());
 		proxies.put(session.getId(), new Proxy<Comment>());
 		proxies.get(session.getId()).setData(comments);
 		session.setAttribute("numCommentPages", proxies.get(session.getId()).getNumPages());
@@ -58,5 +60,12 @@ public class CommentService {
 		List<Comment> comments = proxies.get(session.getId()).getDataByPage(commentPage);
 		session.setAttribute("commentPage", proxies.get(session.getId()).getPage());
 		return comments;
+	}
+}
+
+class CommentComparator implements Comparator<Comment> {
+	@Override
+	public int compare(Comment left, Comment right) {
+		return Integer.compare(right.voteCount(), left.voteCount());
 	}
 }

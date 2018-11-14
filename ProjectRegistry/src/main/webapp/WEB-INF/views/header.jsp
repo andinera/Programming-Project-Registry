@@ -19,7 +19,7 @@
 		<tr>
 			<td><a href="<c:url value="/home" />">Home</a></td>
 			<td><form name='searchBox' action="<c:url value='/user/search'/>" method='GET'>
-				<input type='text' name='search' placeholder="User Search" value=''>
+				<input type='text' name='keyword' placeholder="User Search" value=''>
 			</form></td>
 			<td><c:url value="/j_spring_security_logout" var="logoutUrl"/>
 				<form action="${logoutUrl}" method="post" id="logoutForm">

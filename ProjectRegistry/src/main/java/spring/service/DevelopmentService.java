@@ -1,5 +1,6 @@
 package spring.service;
 
+import java.util.Comparator;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
@@ -49,6 +50,7 @@ public class DevelopmentService {
 	}
 	
 	public void setProxy(HttpSession session, List<Development> developments) {
+		developments.sort(new DevelopmentComparator());
 		proxies.put(session.getId(), new Proxy<Development>());
 		proxies.get(session.getId()).setData(developments);
 		session.setAttribute("numDevelopmentPages", proxies.get(session.getId()).getNumPages());
@@ -58,5 +60,12 @@ public class DevelopmentService {
 		List<Development> developments = proxies.get(session.getId()).getDataByPage(developmentPage);
 		session.setAttribute("developmentPage", proxies.get(session.getId()).getPage());
 		return developments;
+	}
+}
+
+class DevelopmentComparator implements Comparator<Development> {
+	@Override
+	public int compare(Development left, Development right) {
+		return Integer.compare(right.voteCount(), left.voteCount());
 	}
 }

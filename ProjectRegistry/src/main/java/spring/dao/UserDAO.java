@@ -47,10 +47,10 @@ public class UserDAO {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public List<User> loadBySearch(String search) {
+	public List<User> loadByKeyword(String keyword) {
 		List<User> users = sessionFactory.getCurrentSession()
 					.createQuery("from User where username like :keyword")
-					.setParameter("keyword", "%" + search + "%")
+					.setParameter("keyword", "%" + keyword + "%")
 					.list();
 		return users;
 	}

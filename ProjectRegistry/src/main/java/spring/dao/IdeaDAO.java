@@ -35,7 +35,7 @@ public class IdeaDAO {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public List<Idea> loadByFilter(GregorianCalendar startDate, GregorianCalendar stopDate) {
+	public List<Idea> loadWithDateFilter(GregorianCalendar startDate, GregorianCalendar stopDate) {
 		List<Idea> ideas = sessionFactory.getCurrentSession()
 				.createQuery("from Idea where datePosted between :startDate and :stopDate")
 				.setParameter("startDate",  startDate)
