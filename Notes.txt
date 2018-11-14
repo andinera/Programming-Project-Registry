@@ -1,7 +1,7 @@
 
 TODO:
 
-Integrate current services and daos into hierarchies using interfaces or abstract classes.
+Add proxy to user profile ideas and developments.
 
 Implement Flyweight design pattern for user roles so duplicate user roles aren't created and stored in the database.
 

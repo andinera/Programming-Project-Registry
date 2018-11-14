@@ -20,7 +20,7 @@
 		</tr>
 		<tr>
 			<td>Poster: </td>
-			<td><a href="<c:url value='user/profile?username=${idea.getPoster().getUsername()}' />">${idea.getPoster().getUsername()}</a></td>
+			<td><a href="<c:url value='/user/profile?username=${idea.getPoster().getUsername()}' />">${idea.getPoster().getUsername()}</a></td>
 		</tr>
 		<tr>
 			<td>Date posted: </td>
@@ -64,7 +64,7 @@
 		</tr>
 		<c:forEach items="${idea.getDevelopments()}" var="development">
 			<tr>
-				<td><a href="<c:url value='user/profile?username=${development.getDeveloper().getUsername()}' />">${development.getDeveloper().getUsername()}</a></td>
+				<td><a href="<c:url value='/user/profile?username=${development.getDeveloper().getUsername()}' />">${development.getDeveloper().getUsername()}</a></td>
 				<td>${development.getLink()}</td>
 				<td>
 					<table>
