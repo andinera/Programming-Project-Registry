@@ -26,8 +26,9 @@ public class Comment {
 	private User commenter;
 	private GregorianCalendar dateTimePosted;
 	private String comment;
-	private Set<CommentVote> votes = new HashSet<CommentVote>(0);
+	private Set<CommentVote> votes = new HashSet<CommentVote>();
 
+	
 	@SuppressWarnings("unused")
 	private Comment() {
 	}
@@ -51,7 +52,7 @@ public class Comment {
 		return this;
 	}
 	
-	@ManyToOne(fetch=FetchType.EAGER)
+	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="username", nullable=false)
 	public User getCommenter() {
 		return this.commenter;

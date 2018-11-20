@@ -18,19 +18,6 @@
 			<td><a href="<c:url value='/idea/new/form' />">Post Idea</a></td>
 		</tr>
 	</table>
-	<form action="<c:url value='/home/filter'/>" method='POST'>
-		<table>
-			<tr>
-				<td>Start date</td>
-				<td>Stop date</td>
-			</tr>
-			<tr>
-				<td><input type="date" name='startDate'></td>
-				<td><input type="date" name='stopDate'></td>
-				<td><input name="submit" type="submit" value="Filter"/></td>
-			</tr>
-		</table>
-	</form>
 	<br>
 	<table>
 		<tr>
@@ -49,11 +36,11 @@
 		</c:forEach>
 		<tr>
 			<td colspan=3 align=center>
-				<a href="<c:url value='/home/proxy?homePage=${homePage-1}' />">&laquo;</a>
+				<a href="<c:url value='/home?homePage=${homePage-1}' />">&laquo;</a>
 				<c:forEach begin="1" end="${numHomePages}" var="page">
-				    <a href="<c:url value='/home/proxy?homePage=${page}' />">${page}</a>
+				    <a href="<c:url value='/home?homePage=${page}' />">${page}</a>
 				</c:forEach>
-				<a href="<c:url value='/home/proxy?homePage=${homePage+1}' />">&raquo;</a>
+				<a href="<c:url value='/home?homePage=${homePage+1}' />">&raquo;</a>
 			</td>
 		</tr>
 	</table>

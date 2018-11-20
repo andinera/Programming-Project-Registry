@@ -110,8 +110,15 @@ public class User {
 		return this;
 	}
 	
-	public User addDevelopment(Development development) {
+	public Development addDevelopment(Development development) {
+		for (Development d : getDevelopments()) {
+			if (d.getDeveloper().getUsername().equals(development.getDeveloper().getUsername())
+				&& d.getIdea().getId() == development.getIdea().getId()) {
+				development = d;
+					return development;
+				}
+		}
 		this.developments.add(development);
-		return this;
+		return development;
 	}
 }

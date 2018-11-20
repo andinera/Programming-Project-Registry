@@ -22,11 +22,11 @@
 		</c:forEach>
 		<tr>
 			<td colspan=3 align=center>
-				<a href="<c:url value='/user/search/proxy?userPage=${userPage-1}' />">&laquo;</a>
+				<a href="<c:url value='/user/search?userPage=${userPage-1}' />">&laquo;</a>
 				<c:forEach begin="1" end="${numUserPages}" var="page">
-				    <a href="<c:url value='/user/search/proxy?userPage=${page}' />">${page}</a>
+				    <a href="<c:url value='/user/search?userPage=${page}' />">${page}</a>
 				</c:forEach>
-				<a href="<c:url value='/user/search/proxy?userPage=${userPage+1}' />">&raquo;</a>
+				<a href="<c:url value='/user/search?userPage=${userPage+1}' />">&raquo;</a>
 			</td>
 		</tr>
 	</table>

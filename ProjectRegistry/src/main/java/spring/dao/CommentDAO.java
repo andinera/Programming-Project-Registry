@@ -1,34 +1,34 @@
 package spring.dao;
 
+import java.io.Serializable;
 import java.util.List;
 
-import org.hibernate.SessionFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import spring.model.Comment;
 
-@Repository
-public class CommentDAO {
 
-	@Autowired
-	private SessionFactory sessionFactory;
+@Repository("commentDAO")
+public class CommentDAO extends DAO {
 	
-	
-	public void save(Comment comment) {
-		sessionFactory.getCurrentSession().save(comment);
+	@Transactional
+	public Comment loadById(Serializable id) {
+		Comment comment = (Comment) sessionFactory.getCurrentSession()
+											   .createQuery("select distinct c from Comment c"
+											   		+ " left join fetch c.votes"
+											   		+ " where c.id=:id")
+											   .setParameter("id", (int) id)
+											   .uniqueResult();
+		return comment;
 	}
 	
-	public void update(Comment comment) {
-		sessionFactory.getCurrentSession().update(comment);
-	}
-	
+	@Transactional
 	@SuppressWarnings("unchecked")
-	public Comment loadById(int id) {
+	public List<Comment> loadAll() {
 		List<Comment> comments = sessionFactory.getCurrentSession()
-											   .createQuery("from Comment where id=:id")
-											   .setParameter("id",  id)
-											   .list();
-		return comments.get(0);
+				 .createQuery("from Comment")
+				 .list();
+		return comments;
 	}
 }

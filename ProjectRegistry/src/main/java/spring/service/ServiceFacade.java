@@ -1,18 +1,12 @@
 package spring.service;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.List;
-
 import javax.servlet.http.HttpSession;
 
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import spring.model.*;
+import spring.proxy.Proxy;
 
 
 @Service("serviceFacade")
@@ -34,145 +28,117 @@ public class ServiceFacade {
 	private CommentService commentService;
 	
 	
-	// ### Idea ###
-	@Transactional
-	public void createIdea(String title, String description, String username) {
-		User user = userService.loadByUsername(username);
-		Idea idea = ideaService.create(title, description, user);
-		userService.update(user.addIdea(idea));
-	}
-	
-	@Transactional
-	public Idea loadIdea(HttpSession session, int id) {
-		Idea idea = ideaService.loadById(id);	
-		Hibernate.initialize(idea.getVotes());
-		Hibernate.initialize(idea.getDevelopments());
-		for(Development development : idea.getDevelopments()) {
-			Hibernate.initialize(development.getVotes());
-		}
-		developmentService.setProxy(session, idea.getDevelopments());
-		idea.setDevelopments(developmentService.getProxy(session, 1));
-		Hibernate.initialize(idea.getComments());
-		for(Comment comment : idea.getComments()) {
-			Hibernate.initialize(comment.getVotes());
-		}
-		commentService.setProxy(session, idea.getComments());
-		idea.setComments(commentService.getProxy(session, 1));
-		return idea;
-	}
-	
-	public Idea loadIdeaByDevelopmentProxy(HttpSession session, int developmentPage) {
-		Idea idea = (Idea)session.getAttribute("idea");
-		idea.setDevelopments(developmentService.getProxy(session, developmentPage));
-		return idea;
-	}
-	
-	public Idea loadIdeaByCommentProxy(HttpSession session, int commentPage) {
-		Idea idea = (Idea)session.getAttribute("idea");
-		idea.setComments(commentService.getProxy(session,  commentPage));
-		return idea;
-	}
-	
-	@Transactional
-	public List<Idea> loadIdeas(HttpSession session) {
-		ideaService.setProxy(session);
-		return loadIdeasByProxy(session, 1);
-	}
-	
-	@Transactional
-	public List<Idea> loadIdeasWithDateFilter(HttpSession session, Date startDate, Date stopDate) {
-		GregorianCalendar startCal = new GregorianCalendar();
-		startCal.setTime(startDate);
-		GregorianCalendar stopCal = new GregorianCalendar();
-		stopCal.setTime(stopDate);
-		stopCal.roll(Calendar.HOUR, 23 - stopCal.get(Calendar.HOUR));
-		stopCal.roll(Calendar.MINUTE, 59 - stopCal.get(Calendar.MINUTE));
-		stopCal.roll(Calendar.SECOND, 59 - stopCal.get(Calendar.SECOND));
-		stopCal.roll(Calendar.AM_PM, 1 - stopCal.get(Calendar.AM_PM));
-		ideaService.setProxyWithDateFilter(session, startCal, stopCal);
-		return loadIdeasByProxy(session, 1);
-	}
-	
-	@Transactional
-	public List<Idea> loadIdeasByProxy(HttpSession session, int page) {
-		return ideaService.getProxy(session, page);
-	}
-	
 	// ### User ###
-	@Transactional
-	public User createUser() {
-		return userService.create();
-	}
-	
-	@Transactional
 	public void saveUser(String username, String password) {
 		userService.save(username, password);
 	}
 	
-	@Transactional
-	public User loadUser(String username) {
-		return userService.loadByUsername(username);
+	public void loadUser(HttpSession session, String username) {
+		User user = userService.loadByUsername(username);
+		session.setAttribute("user", user);
 	}
 	
-	@Transactional
-	public List<User> loadUsersByKeyword(HttpSession session, String keyword) {
-		userService.setProxy(session, keyword);
-		return userService.getProxy(session, 1);
+	public void loadUsersByKeyword(HttpSession session, String keyword, int page) {
+		Proxy<User> proxy = userService.loadByPage(session.getId(), keyword, page);
+		session.setAttribute("numUserPages", proxy.getNumPages());
+		session.setAttribute("userPage", proxy.getPage());
+		session.setAttribute("users", proxy.getPagedData());
 	}
 	
-	public List<User> loadUsersByKeywordProxy(HttpSession session, int userPage) {
-		return userService.getProxy(session, userPage);
+	// ### Idea ###
+	public void createIdea(HttpSession session, String title, String description, String username) {
+		User user = userService.loadByUsername(username);
+		session.setAttribute("user", user);
+		Idea idea = ideaService.create(title, description, user);
+		user.addIdea(idea);
+		userService.saveOrUpdate(user);
+		ideaService.add(idea);
+	}
+	
+	public void loadIdea(HttpSession session, Integer id, Integer developmentPage, Integer commentPage) {
+		Idea idea = ideaService.loadById(id);
+		session.setAttribute("idea", idea);
+		Proxy<Development> developmentProxy = developmentService.loadByPage(session.getId(), idea, developmentPage);
+		session.setAttribute("numDevelopmentPages", developmentProxy.getNumPages());
+		session.setAttribute("developmentPage", developmentProxy.getPage());
+		session.setAttribute("developments", developmentProxy.getPagedData());
+		Proxy<Comment> commentProxy = commentService.loadByPage(session.getId(), idea, commentPage);
+		session.setAttribute("numCommentPages", commentProxy.getNumPages());
+		session.setAttribute("commentPage", commentProxy.getPage());
+		session.setAttribute("comments", commentProxy.getPagedData());
+	}
+	
+	public void loadIdeasByPage(HttpSession session, int page) {
+		Proxy<Idea> proxy = ideaService.loadByPage(session.getId(), page);
+		session.setAttribute("numHomePages", proxy.getNumPages());
+		session.setAttribute("homePage", proxy.getPage());
+		session.setAttribute("ideas", proxy.getPagedData());
 	}
 	
 	// ### Development ###
-	@Transactional
-	public void createDevelopment(int ideaId, String link, String username) {
+	public void createDevelopment(HttpSession session, String link, String username) {
 		User user = userService.loadByUsername(username);
-		Idea idea = ideaService.loadById(ideaId);
+		session.setAttribute("user", user);
+		Idea idea = (Idea) session.getAttribute("idea");
 		Development development = developmentService.create(idea, link, user);
+		for (Development d : idea.getDevelopments()) {
+			if (d.getDeveloper().getUsername().equals(user.getUsername())) {
+				return;
+			}
+		}
+		development = user.addDevelopment(development);
 		idea.addDevelopment(development);
-		user.addDevelopment(development);
-		ideaService.update(idea);
-		userService.update(user);
+		userService.saveOrUpdate(user);
+		ideaService.saveOrUpdate(idea);
 	}
 	
 	// ### Comment ###
-	@Transactional
-	public void createComment(int ideaId, String username, String comment) {
-		Idea idea = ideaService.loadById(ideaId);
-		User commenter = userService.loadByUsername(username);
-		Comment c = commentService.create(commenter, comment);
+	public void createComment(HttpSession session, String username, String comment) {
+		User user = userService.loadByUsername(username);
+		session.setAttribute("user", user);
+		Idea idea = (Idea) session.getAttribute("idea");
+		idea = ideaService.loadById(idea.getId());
+		session.setAttribute("idea", idea);
+		Comment c = commentService.create(user, comment);
 		idea.addComment(c);
-		ideaService.update(idea);
+		ideaService.saveOrUpdate(idea);
 	}
 	
 	// ### IdeaVote ###
-	@Transactional
-	public void createIdeaVote(String voter, Boolean upVote, int ideaId) {
-		User votee = userService.loadByUsername(voter);
-		Idea idea = ideaService.loadById(ideaId);
-		IdeaVote vote = voteService.create(votee, upVote, idea);
+	public void createIdeaVote(HttpSession session, String voter, Boolean upVote, int ideaId) {
+		User user = userService.loadByUsername(voter);
+		session.setAttribute("user", user);
+		Idea idea = (Idea) session.getAttribute("idea");
+		idea = ideaService.loadById(idea.getId());
+		session.setAttribute("idea", idea);
+		IdeaVote vote = voteService.create(user, upVote, idea);
 		idea.addVote(vote);
-		ideaService.update(idea);
+		ideaService.saveOrUpdate(idea);
 	}
 	
 	// ### DevelopmentVote ###
-	@Transactional
-	public void createDevelopmentVote(String username, Boolean upVote, int developmentId) {
-		User voter = userService.loadByUsername(username);
-		Development development = developmentService.loadById(developmentId);
-		DevelopmentVote vote = voteService.create(voter, upVote, development);
+	public void createDevelopmentVote(HttpSession session, String username, Boolean upVote, int developmentId) {
+		User user = userService.loadByUsername(username);
+		session.setAttribute("user", user);
+		Idea idea = (Idea) session.getAttribute("idea");
+		idea = ideaService.loadById(idea.getId());
+		session.setAttribute("idea", idea);
+		Development development = developmentService.loadById(session.getId(), developmentId);
+		DevelopmentVote vote = voteService.create(user, upVote, development);
 		development.addVote(vote);
-		developmentService.update(development);
+		developmentService.saveOrUpdate(development);
 	}
 	
 	// ### CommentVote ###
-	@Transactional
-	public void createCommentVote(String username, Boolean upVote, int commentId) {
-		User voter = userService.loadByUsername(username);
-		Comment comment = commentService.loadById(commentId);
-		CommentVote vote = voteService.create(voter, upVote, comment);
+	public void createCommentVote(HttpSession session, String username, Boolean upVote, int commentId) {
+		User user = userService.loadByUsername(username);
+		session.setAttribute("user", user);
+		Idea idea = (Idea) session.getAttribute("idea");
+		idea = ideaService.loadById(idea.getId());
+		session.setAttribute("idea", idea);
+		Comment comment = commentService.loadById(session.getId(), commentId);
+		CommentVote vote = voteService.create(user, upVote, comment);
 		comment.addVote(vote);
-		commentService.update(comment);
+		commentService.saveOrUpdate(comment);
 	}
 }

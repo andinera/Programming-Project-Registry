@@ -1,9 +1,11 @@
 
 TODO:
 
-Add proxy to user profile ideas and developments.
+Add proxy links to user profile ideas and developments.
 
-Implement Flyweight design pattern for user roles so duplicate user roles aren't created and stored in the database.
+Implement Flyweight design pattern for most things.
+
+Remove unit of work. Follow hibernate persistence patterns.
 
 Document code using Javadoc.
 

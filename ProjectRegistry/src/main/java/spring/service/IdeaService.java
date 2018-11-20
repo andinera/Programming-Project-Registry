@@ -1,17 +1,20 @@
 package spring.service;
 
-import java.util.List;
-import java.util.Comparator;
 import java.util.GregorianCalendar;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.Hashtable;
+import java.util.List;
 
-import javax.servlet.http.HttpSession;
-import org.hibernate.Hibernate;
+import javax.annotation.PostConstruct;
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
+import spring.Comparator.IdeaComparatorByVote;
 import spring.dao.IdeaDAO;
 import spring.model.Idea;
 import spring.model.User;
@@ -22,65 +25,84 @@ import spring.proxy.Proxy;
 public class IdeaService {
 	
 	@Autowired
+	@Qualifier("ideaDAO")
 	private IdeaDAO dao;
 	
-	private Map<String, Proxy<Idea>> proxies = new Hashtable<String, Proxy<Idea>>();
-
+	private Set<Idea> sharedIdeas;
+	private Map<String, Proxy<Idea>> sessionProxies = new Hashtable<String, Proxy<Idea>>();
+	
+	
+	@PostConstruct
+	public void initialize() {
+		List<Idea> dataList = dao.loadAll();
+		sharedIdeas = new TreeSet<Idea>(new IdeaComparatorByVote());
+		sharedIdeas.addAll(dataList);
+	}
 	
 	@Transactional
 	public int save(Idea idea) {
-		return dao.save(idea);
+		int id = (int) dao.save(idea);
+		sharedIdeas.add(idea);
+		return id;
 	}
 	
 	@Transactional
 	public void update(Idea idea) {
 		dao.update(idea);
+	} 
+	
+	public void saveOrUpdate(Idea idea) {
+		dao.saveOrUpdate(idea);
+		for (Idea i : sharedIdeas) {
+			if (i.getId() == idea.getId()) {
+				i = idea;
+			}
+		}
 	}
+	
+	public Idea merge(Idea idea) {
+		idea = (Idea) dao.merge(idea);
+		for (Idea i : sharedIdeas) {
+			if (i.getId() == idea.getId()) {
+				i = idea;
+				return idea;
+			}
+		}
+		sharedIdeas.add(idea);
+		return idea;
+	} 
 	
 	public Idea create(String title, String description, User poster) {
 		return new Idea(title, description, poster, new GregorianCalendar());
 	}
 	
-	@Transactional
+	public void add(Idea idea) {
+		for (Idea i : sharedIdeas) {
+			if (i.getId() == idea.getId()) {
+				return;
+			}
+		}
+		sharedIdeas.add(idea);
+	}
+	
 	public Idea loadById(int id) {
+		for (Idea idea : sharedIdeas) {
+			if (idea.getId() == id) {
+				return idea;
+			}
+		}
 		Idea idea = dao.loadById(id);
+		sharedIdeas.add(idea);
 		return idea;
 	}
 	
-	@Transactional
-	public void setProxy(HttpSession session) {
-		List<Idea> ideas = dao.loadAll();
-		for (Idea idea: ideas) {
-			Hibernate.initialize(idea.getVotes());
+	public Proxy<Idea> loadByPage(String sessionId, int page) {
+		Proxy<Idea> proxy = sessionProxies.get(sessionId);
+		if (proxy == null) {
+			proxy = new Proxy<Idea>();
 		}
-		ideas.sort(new IdeaComparator());
-		proxies.put(session.getId(), new Proxy<Idea>());
-		proxies.get(session.getId()).setData(ideas);
-		session.setAttribute("numHomePages", proxies.get(session.getId()).getNumPages());
-	}
-	
-	public List<Idea> getProxy(HttpSession session, Integer homePage) {
-		List<Idea> ideas = proxies.get(session.getId()).getDataByPage(homePage);
-		session.setAttribute("homePage", proxies.get(session.getId()).getPage());
-		return ideas;
-	}
-	
-	@Transactional
-	public void setProxyWithDateFilter(HttpSession session, GregorianCalendar startCal, GregorianCalendar stopCal) {
-		List<Idea> ideas = dao.loadWithDateFilter(startCal, stopCal);
-		for (Idea idea: ideas) {
-			Hibernate.initialize(idea.getVotes());
-		}
-		ideas.sort(new IdeaComparator());
-		proxies.put(session.getId(), new Proxy<Idea>());
-		proxies.get(session.getId()).setData(ideas);
-		session.setAttribute("numHomePages", proxies.get(session.getId()).getNumPages());
-	}
-}
-
-class IdeaComparator implements Comparator<Idea> {
-	@Override
-	public int compare(Idea left, Idea right) {
-		return Integer.compare(right.voteCount(), left.voteCount());
+		proxy.setPagedData(sharedIdeas, page);
+		return proxy;
+		
 	}
 }

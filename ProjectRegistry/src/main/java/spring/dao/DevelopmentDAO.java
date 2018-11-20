@@ -1,35 +1,34 @@
 package spring.dao;
 
+import java.io.Serializable;
 import java.util.List;
 
-import org.hibernate.SessionFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import spring.model.Development;
 
 
-@Repository
-public class DevelopmentDAO {
-
-	@Autowired
-	private SessionFactory sessionFactory;
+@Repository("developmentDAO")
+public class DevelopmentDAO extends DAO {
 	
-	
-	public void save(Development development) {
-		sessionFactory.getCurrentSession().save(development);
+	@Transactional
+	public Development loadById(Serializable id) {
+		Development development = (Development) sessionFactory.getCurrentSession()
+															  .createQuery("select distinct d from Development d"
+															  		+ " left join fetch d.votes"
+															  		+ " where d.id=:id")
+															  .setParameter("id", (int) id)
+															  .uniqueResult();
+		return development;
 	}
 	
-	public void update(Development development) {
-		sessionFactory.getCurrentSession().update(development);
-	}
-	
+	@Transactional
 	@SuppressWarnings("unchecked")
-	public Development loadById(int id) {
+	public List<Development> loadAll() {
 		List<Development> developments = sessionFactory.getCurrentSession()
-													   .createQuery("from Development where id=:id")
-													   .setParameter("id",  id)
-													   .list();
-		return developments.get(0);
+											     	   .createQuery("from Development")
+											     	   .list();
+		return developments;
 	}
 }

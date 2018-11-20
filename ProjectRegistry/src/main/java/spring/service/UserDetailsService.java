@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -23,6 +24,7 @@ import spring.model.UserRole;
 public class UserDetailsService implements UserDetailsManager {
 
 	@Autowired
+	@Qualifier("userDAO")
 	private UserDAO dao;
 	
 	@Autowired 
@@ -42,7 +44,7 @@ public class UserDetailsService implements UserDetailsManager {
 	@Override
 	@Transactional(readOnly=true)
 	public UserDetails loadUserByUsername(final String username) throws UsernameNotFoundException {
-		spring.model.User user = dao.loadByUsername(username);
+		spring.model.User user = dao.loadById(username);
 		List<GrantedAuthority> authorities = buildUserAuthority(user.getUserRoles());
 		return buildUserForAuthentication(user, authorities);
 	}
@@ -60,18 +62,22 @@ public class UserDetailsService implements UserDetailsManager {
 		return result;
 	}
 
+	@Override
 	public void updateUser(UserDetails user) {
 		
 	}
 
+	@Override
 	public void deleteUser(String username) {
 		
 	}
 
+	@Override
 	public void changePassword(String oldPassword, String newPassword) {
 		
 	}
 
+	@Override
 	public boolean userExists(String username) {
 		return false;
 	}

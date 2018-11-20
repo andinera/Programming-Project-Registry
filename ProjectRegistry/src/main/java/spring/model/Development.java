@@ -26,7 +26,7 @@ public class Development {
 	private Idea idea;
 	private String link;
 	private User developer;
-	private Set<DevelopmentVote> votes = new HashSet<DevelopmentVote>(0);
+	private Set<DevelopmentVote> votes = new HashSet<DevelopmentVote>();
 
 	
 	@SuppressWarnings("unused")
@@ -52,7 +52,7 @@ public class Development {
 		return this;
 	}
 	
-	@ManyToOne(fetch=FetchType.EAGER)
+	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="ideaId", referencedColumnName="id", nullable=false)
 	public Idea getIdea() {
 		return this.idea;
@@ -73,7 +73,7 @@ public class Development {
 		return this;
 	}
 	
-	@ManyToOne(fetch=FetchType.EAGER)
+	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="username", nullable=false)
 	public User getDeveloper() {
 		return this.developer;

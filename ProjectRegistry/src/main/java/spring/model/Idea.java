@@ -3,8 +3,9 @@ package spring.model;
 import static javax.persistence.GenerationType.IDENTITY;
 
 import java.util.GregorianCalendar;
-import java.util.List;
-import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.TreeSet;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -17,6 +18,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import spring.Comparator.CommentComparator;
+import spring.Comparator.DevelopmentComparator;
+
 
 @Entity
 @Table(name="ideas")
@@ -28,13 +32,12 @@ public class Idea {
 	private GregorianCalendar datePosted;
 	private GregorianCalendar dateModified;
 	private User poster;
-	private List<IdeaVote> votes = new ArrayList<IdeaVote>();
-	private List<Development> developments = new ArrayList<Development>();
-	private List<Comment> comments = new ArrayList<Comment>();
+	private Set<IdeaVote> votes = new HashSet<IdeaVote>();
+	private Set<Development> developments = new TreeSet<Development>(new DevelopmentComparator());
+	private Set<Comment> comments = new TreeSet<Comment>(new CommentComparator());
 	
 	
-	@SuppressWarnings("unused")
-	private Idea() {	
+	public Idea() {	
 	}
 	
 	public Idea(String title, String description, User poster, GregorianCalendar datePosted) {
@@ -98,7 +101,7 @@ public class Idea {
 		return this;
 	}
 	
-	@ManyToOne(fetch=FetchType.EAGER)
+	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="username", nullable=false)
 	public User getPoster() {
 		return this.poster;
@@ -110,12 +113,12 @@ public class Idea {
 	}
 	
 	@OneToMany(fetch=FetchType.LAZY, mappedBy="idea", cascade=CascadeType.ALL)
-	public List<IdeaVote> getVotes() {
+	public Set<IdeaVote> getVotes() {
 		return this.votes;
 	}
 	
 	@SuppressWarnings("unused")
-	private Idea setVotes(List<IdeaVote> votes) {
+	private Idea setVotes(Set<IdeaVote> votes) {
 		this.votes = votes;
 		return this;
 	}
@@ -145,11 +148,11 @@ public class Idea {
 	}
 	
 	@OneToMany(fetch=FetchType.LAZY, mappedBy="idea", cascade=CascadeType.ALL)
-	public List<Development> getDevelopments() {
+	public Set<Development> getDevelopments() {
 		return this.developments;
 	}
 	
-	public  Idea setDevelopments(List<Development> developments) {
+	public Idea setDevelopments(Set<Development> developments) {
 		this.developments = developments;
 		return this;
 	}
@@ -161,11 +164,11 @@ public class Idea {
 	
 	@OneToMany(fetch=FetchType.LAZY, cascade=CascadeType.ALL)
 	@JoinColumn(name="comments", nullable=false)
-	public List<Comment> getComments() {
+	public Set<Comment> getComments() {
 		return this.comments;
 	}
 	
-	public Idea setComments(List<Comment> comments) {
+	public Idea setComments(Set<Comment> comments) {
 		this.comments = comments;
 		return this;
 	}

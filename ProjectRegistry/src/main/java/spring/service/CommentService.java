@@ -1,20 +1,17 @@
 package spring.service;
 
-import java.util.Comparator;
 import java.util.GregorianCalendar;
 import java.util.Hashtable;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
-import javax.servlet.http.HttpSession;
-
-import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import spring.dao.CommentDAO;
 import spring.model.Comment;
+import spring.model.Idea;
 import spring.model.User;
 import spring.proxy.Proxy;
 
@@ -23,49 +20,48 @@ import spring.proxy.Proxy;
 public class CommentService {
 	
 	@Autowired
+	@Qualifier("commentDAO")
 	private CommentDAO dao;
 	
-	private Map<String, Proxy<Comment>> proxies = new Hashtable<String, Proxy<Comment>>();
+	private Map<String, Proxy<Comment>> sessionProxies = new Hashtable<String, Proxy<Comment>>();
 	
 	
-	@Transactional
 	public void save(Comment comment) {
 		dao.save(comment);
 	}
 	
-	@Transactional 
 	public void update(Comment comment) {
 		dao.update(comment);
+	}
+	
+	public void saveOrUpdate(Comment comment) {
+		dao.saveOrUpdate(comment);
 	}
 	
 	public Comment create(User commenter, String comment) {
 		return new Comment(commenter, new GregorianCalendar(), comment);
 	}
 	
-	@Transactional(readOnly=true)
-	public Comment loadById(int id) {
+	public Comment loadById(String sessionId, int id) {
+		Proxy<Comment> proxy = sessionProxies.get(sessionId);
+		Set<Comment> comments = proxy.getPagedData();
+		for (Comment comment : comments) {
+			if (comment.getId() == id) {
+				return comment;
+			}
+		}
 		Comment comment = dao.loadById(id);
-		Hibernate.initialize(comment.getVotes());
 		return comment;
 	}
 	
-	public void setProxy(HttpSession session, List<Comment> comments) {
-		comments.sort(new CommentComparator());
-		proxies.put(session.getId(), new Proxy<Comment>());
-		proxies.get(session.getId()).setData(comments);
-		session.setAttribute("numCommentPages", proxies.get(session.getId()).getNumPages());
-	}
-	
-	public List<Comment> getProxy(HttpSession session, Integer commentPage) {
-		List<Comment> comments = proxies.get(session.getId()).getDataByPage(commentPage);
-		session.setAttribute("commentPage", proxies.get(session.getId()).getPage());
-		return comments;
-	}
-}
-
-class CommentComparator implements Comparator<Comment> {
-	@Override
-	public int compare(Comment left, Comment right) {
-		return Integer.compare(right.voteCount(), left.voteCount());
+	public Proxy<Comment> loadByPage(String sessionId, Idea idea, int page) {
+		Proxy<Comment> proxy = sessionProxies.get(sessionId);
+		if (proxy == null) {
+			proxy = new Proxy<Comment>();
+			sessionProxies.put(sessionId, proxy);
+		}
+		proxy.setPagedData(idea.getComments(), page);
+		return proxy;
+		
 	}
 }

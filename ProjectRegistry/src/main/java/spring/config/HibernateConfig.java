@@ -33,6 +33,7 @@ public class HibernateConfig {
 		hibernateProperties.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQL5Dialect");
 		hibernateProperties.setProperty("hibernate.show_sql", "false");
 		hibernateProperties.setProperty("hibernate.format_sql", "true");
+//		hibernateProperties.setProperty("hibernate.generate_statistics", "true");
 		
 		sessionFactory.setHibernateProperties(hibernateProperties);
 		sessionFactory.setAnnotatedClasses(User.class, 

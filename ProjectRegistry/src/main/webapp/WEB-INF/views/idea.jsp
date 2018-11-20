@@ -62,7 +62,7 @@
 			<td align=center>Link</td>
 			<td align=center>Votes</td>
 		</tr>
-		<c:forEach items="${idea.getDevelopments()}" var="development">
+		<c:forEach items="${developments}" var="development">
 			<tr>
 				<td><a href="<c:url value='/user/profile?username=${development.getDeveloper().getUsername()}' />">${development.getDeveloper().getUsername()}</a></td>
 				<td>${development.getLink()}</td>
@@ -91,11 +91,11 @@
 		</c:forEach>
 		<tr>
 			<td colspan=3 align=center>
-				<a href="<c:url value='/idea/proxy/development?developmentPage=${developmentPage-1}' />">&laquo;</a>
+				<a href="<c:url value='/idea?developmentPage=${developmentPage-1}' />">&laquo;</a>
 				<c:forEach begin="1" end="${numDevelopmentPages}" var="page">
-				    <a href="<c:url value='/idea/proxy/development?developmentPage=${page}' />">${page}</a>
+				    <a href="<c:url value='/idea?developmentPage=${page}' />">${page}</a>
 				</c:forEach>
-				<a href="<c:url value='/idea/proxy/development?developmentPage=${developmentPage+1}' />">&raquo;</a>
+				<a href="<c:url value='/idea?developmentPage=${developmentPage+1}' />">&raquo;</a>
 			</td>
 		</tr>
 	</table>
@@ -113,7 +113,7 @@
 			<td align=center>Comment</td>
 			<td align=center>Votes</td>
 		</tr>
-		<c:forEach items="${idea.getComments()}" var="comment">
+		<c:forEach items="${comments}" var="comment">
 			<tr>
 				<td><a href="<c:url value='/user/profile?username=${comment.getCommenter().getUsername()}' />">${comment.getCommenter().getUsername()}</a></td>
 				<td><fmt:formatDate type="date" value="${comment.getDateTimePosted().getTime()}" /></td>
@@ -143,11 +143,11 @@
 		</c:forEach>
 		<tr>
 			<td colspan=3 align=center>
-				<a href="<c:url value='/idea/proxy/comment?commentPage=${commentPage-1}' />">&laquo;</a>
+				<a href="<c:url value='/idea?commentPage=${commentPage-1}' />">&laquo;</a>
 				<c:forEach begin="1" end="${numCommentPages}" var="page">
-				    <a href="<c:url value='/idea/proxy/comment?commentPage=${page}' />">${page}</a>
+				    <a href="<c:url value='/idea?commentPage=${page}' />">${page}</a>
 				</c:forEach>
-				<a href="<c:url value='/idea/proxy/comment?commentPage=${commentPage+1}' />">&raquo;</a>
+				<a href="<c:url value='/idea?commentPage=${commentPage+1}' />">&raquo;</a>
 			</td>
 		</tr>
 	</table>

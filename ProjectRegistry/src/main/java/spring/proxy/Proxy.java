@@ -1,35 +1,35 @@
 package spring.proxy;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.lang.Math;
 
 
 public class Proxy<T> {
 	
-	private List<T> data;
-	private int pageSize = 2;
-	private int numPages;
+	private Set<T> pagedData;
+	private int pageSize = 1;
+	private int numPages = 0;
 	private int page = 1;
 
-	public void setData(List<T> data) {
-		this.data = data;
-		setNumPages((int)Math.ceil((double)data.size() / getPageSize()));
-	}
 	
-	public List<T> getData() {
-		return data;
-	}
-	
-	public List<T> getDataByPage(Integer page) {
-		page = Math.max(1, Math.min(page, numPages));
+	public void setPagedData(Set<T> data, Integer page) {
+		setNumPages(data);
 		setPage(page);
 		int lastIndex;
-		if (page*pageSize >= data.size()) {
+		if (getPage()*pageSize >= data.size()) {
 			lastIndex = data.size();
 		} else {
-			lastIndex = page*pageSize;
+			lastIndex = getPage()*pageSize;
 		}
-		return data.subList((page-1)*pageSize, lastIndex);
+		List<T> list = (new ArrayList<T>(data)).subList((getPage()-1)*pageSize, lastIndex);
+		pagedData = new HashSet<T>(list);
+	}
+	
+	public Set<T> getPagedData() {
+		return pagedData;
 	}
 	
 	public void setPageSize(int pageSize) {
@@ -40,8 +40,8 @@ public class Proxy<T> {
 		return pageSize;
 	}
 	
-	public void setNumPages(int numPages) {
-		this.numPages = numPages;
+	public void setNumPages(Set<T> data) {
+		this.numPages = (int)Math.ceil((double)data.size() / getPageSize());
 	}
 	
 	public int getNumPages() {
@@ -49,10 +49,10 @@ public class Proxy<T> {
 	}
 	
 	public void setPage(int page) {
-		this.page = page;
+		this.page = Math.max(1, Math.min(page, numPages));
 	}
 	
 	public int getPage() {
-		return page;
+		return this.page;
 	}
 }
