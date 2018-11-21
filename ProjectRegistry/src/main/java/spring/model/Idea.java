@@ -4,8 +4,8 @@ import static javax.persistence.GenerationType.IDENTITY;
 
 import java.util.GregorianCalendar;
 import java.util.HashSet;
-import java.util.Set;
 import java.util.TreeSet;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -18,8 +18,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import spring.Comparator.CommentComparator;
-import spring.Comparator.DevelopmentComparator;
+import spring.Comparator.CommentComparatorByVote;
+import spring.Comparator.DevelopmentComparatorByVote;
 
 
 @Entity
@@ -33,8 +33,8 @@ public class Idea {
 	private GregorianCalendar dateModified;
 	private User poster;
 	private Set<IdeaVote> votes = new HashSet<IdeaVote>();
-	private Set<Development> developments = new TreeSet<Development>(new DevelopmentComparator());
-	private Set<Comment> comments = new TreeSet<Comment>(new CommentComparator());
+	private Set<Development> developments = new TreeSet<Development>(new DevelopmentComparatorByVote());
+	private Set<Comment> comments = new TreeSet<Comment>(new CommentComparatorByVote());
 	
 	
 	public Idea() {	

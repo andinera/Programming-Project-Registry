@@ -100,9 +100,23 @@ public class IdeaService {
 		Proxy<Idea> proxy = sessionProxies.get(sessionId);
 		if (proxy == null) {
 			proxy = new Proxy<Idea>();
+			sessionProxies.put(sessionId, proxy);
 		}
-		proxy.setPagedData(sharedIdeas, page);
+		Set<Idea> orderedIdeas = new TreeSet<Idea>(new IdeaComparatorByVote());
+		orderedIdeas.addAll(sharedIdeas);
+		proxy.setPagedData(orderedIdeas, page);
 		return proxy;
-		
+	}
+	
+	public Proxy<Idea> loadByPage(String sessionId, Set<Idea> ideas, int page) {
+		Proxy<Idea> proxy = sessionProxies.get(sessionId);
+		if (proxy == null) {
+			proxy = new Proxy<Idea>();
+			sessionProxies.put(sessionId, proxy);
+		}
+		Set<Idea> orderedIdeas = new TreeSet<Idea>(new IdeaComparatorByVote());
+		orderedIdeas.addAll(ideas);
+		proxy.setPagedData(orderedIdeas, page);
+		return proxy;
 	}
 }

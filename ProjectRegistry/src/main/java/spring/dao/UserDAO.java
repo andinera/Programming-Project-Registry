@@ -21,6 +21,7 @@ public class UserDAO extends DAO {
 												+ " left join fetch u.developments d"
 												+ " left join fetch i.votes"
 												+ " left join fetch d.votes"
+												+ " left join fetch d.idea"
 												+ " where u.username=:username")
 										 .setParameter("username", (String) id)
 										 .uniqueResult();

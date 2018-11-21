@@ -1,6 +1,7 @@
 package spring.model;
 
 import java.util.HashSet;
+import java.util.TreeSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -11,6 +12,10 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import spring.Comparator.DevelopmentComparatorByVote;
+import spring.Comparator.IdeaComparatorByVote;
+
+
 @Entity
 @Table(name="users")
 public class User {
@@ -18,9 +23,9 @@ public class User {
 	private String username;
 	private String password;
 	private boolean enabled;
-	private Set<UserRole> userRoles = new HashSet<UserRole>(0);
-	private Set<Idea> ideas = new HashSet<Idea>(0);
-	private Set<Development> developments = new HashSet<Development>(0);
+	private Set<UserRole> userRoles = new HashSet<UserRole>();
+	private Set<Idea> ideas = new TreeSet<Idea>(new IdeaComparatorByVote());
+	private Set<Development> developments = new TreeSet<Development>(new DevelopmentComparatorByVote());
 	
 	
 	public User() {

@@ -12,17 +12,17 @@ import org.springframework.web.servlet.ModelAndView;
 public class HomeController extends AbstractController {
 	
 	@GetMapping({"/", "/home"})
-	public ModelAndView home(@RequestParam(value="homePage", required=false) Integer homePage,
+	public ModelAndView home(@RequestParam(value="homePageOfIdeas", required=false) Integer homePageOfIdeas,
 			 				 HttpSession session) {
 		ModelAndView model = new ModelAndView();
-		if (homePage == null) {
-			if (session.getAttribute("homePage") == null) {
-				homePage = 1;
-			} else {
-				homePage = (Integer) session.getAttribute("homePage");
+		if (homePageOfIdeas == null) {
+			if (session.getAttribute("homePageOfIdeas") == null) {
+				session.setAttribute("homePageOfIdeas", 1);
 			}
+		} else {
+			session.setAttribute("homePageOfIdeas", homePageOfIdeas);
 		}
-		serviceFacade.loadIdeasByPage(session, homePage);
+		serviceFacade.loadIdeasByPage(session);
 		model.setViewName("home");
 		return model;
 	}

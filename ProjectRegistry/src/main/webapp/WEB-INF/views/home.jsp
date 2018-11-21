@@ -26,7 +26,7 @@
 			<td>Poster</td>
 			<td>Votes</td>
 		</tr>
-		<c:forEach items="${ideas}" var="idea">
+		<c:forEach items="${homeIdeas}" var="idea">
 			<tr>
 				<td><fmt:formatDate type="date" value="${idea.getDatePosted().getTime()}" /></td>
 				<td><a href="<c:url value='/idea?id=${idea.getId()}' />">${idea.getTitle()}</a></td>
@@ -36,11 +36,11 @@
 		</c:forEach>
 		<tr>
 			<td colspan=3 align=center>
-				<a href="<c:url value='/home?homePage=${homePage-1}' />">&laquo;</a>
-				<c:forEach begin="1" end="${numHomePages}" var="page">
-				    <a href="<c:url value='/home?homePage=${page}' />">${page}</a>
+				<a href="<c:url value='/home?homePageOfIdeas=${homePageOfIdeas-1}' />">&laquo;</a>
+				<c:forEach begin="1" end="${numHomePagesOfIdeas}" var="page">
+				    <a href="<c:url value='/home?homePageOfIdeas=${page}' />">${page}</a>
 				</c:forEach>
-				<a href="<c:url value='/home?homePage=${homePage+1}' />">&raquo;</a>
+				<a href="<c:url value='/home?homePageOfIdeas=${homePageOfIdeas+1}' />">&raquo;</a>
 			</td>
 		</tr>
 	</table>

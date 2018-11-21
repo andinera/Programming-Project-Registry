@@ -33,13 +33,21 @@ public class ServiceFacade {
 		userService.save(username, password);
 	}
 	
-	public void loadUser(HttpSession session, String username) {
-		User user = userService.loadByUsername(username);
+	public void loadUser(HttpSession session) {
+		User user = userService.loadByUsername((String) session.getAttribute("username"));
 		session.setAttribute("user", user);
+		Proxy<Idea> ideaProxy = ideaService.loadByPage(session.getId(), user.getIdeas(), (int) session.getAttribute("userPageOfIdeas"));
+		session.setAttribute("numIdeaPages", ideaProxy.getNumPages());
+		session.setAttribute("ideaPage", ideaProxy.getPage());
+		session.setAttribute("ideas", ideaProxy.getPagedData());
+		Proxy<Development> developmentProxy = developmentService.loadByPage(session.getId(), user.getDevelopments(), (int) session.getAttribute("userPageOfDevelopments"));
+		session.setAttribute("numDevelopmentPages", developmentProxy.getNumPages());
+		session.setAttribute("developmentPage", developmentProxy.getPage());
+		session.setAttribute("developments", developmentProxy.getPagedData());
 	}
 	
-	public void loadUsersByKeyword(HttpSession session, String keyword, int page) {
-		Proxy<User> proxy = userService.loadByPage(session.getId(), keyword, page);
+	public void loadUsersByKeyword(HttpSession session) {
+		Proxy<User> proxy = userService.loadByPage(session.getId(), (String) session.getAttribute("keyword"), (int) session.getAttribute("searchPageOfUsers"));
 		session.setAttribute("numUserPages", proxy.getNumPages());
 		session.setAttribute("userPage", proxy.getPage());
 		session.setAttribute("users", proxy.getPagedData());
@@ -55,24 +63,24 @@ public class ServiceFacade {
 		ideaService.add(idea);
 	}
 	
-	public void loadIdea(HttpSession session, Integer id, Integer developmentPage, Integer commentPage) {
-		Idea idea = ideaService.loadById(id);
+	public void loadIdea(HttpSession session) {
+		Idea idea = ideaService.loadById((int) session.getAttribute("ideaId"));
 		session.setAttribute("idea", idea);
-		Proxy<Development> developmentProxy = developmentService.loadByPage(session.getId(), idea, developmentPage);
+		Proxy<Development> developmentProxy = developmentService.loadByPage(session.getId(), idea.getDevelopments(), (int) session.getAttribute("ideaPageOfDevelopments"));
 		session.setAttribute("numDevelopmentPages", developmentProxy.getNumPages());
 		session.setAttribute("developmentPage", developmentProxy.getPage());
 		session.setAttribute("developments", developmentProxy.getPagedData());
-		Proxy<Comment> commentProxy = commentService.loadByPage(session.getId(), idea, commentPage);
+		Proxy<Comment> commentProxy = commentService.loadByPage(session.getId(), idea.getComments(), (int) session.getAttribute("ideaPageOfComments"));
 		session.setAttribute("numCommentPages", commentProxy.getNumPages());
 		session.setAttribute("commentPage", commentProxy.getPage());
 		session.setAttribute("comments", commentProxy.getPagedData());
 	}
 	
-	public void loadIdeasByPage(HttpSession session, int page) {
-		Proxy<Idea> proxy = ideaService.loadByPage(session.getId(), page);
-		session.setAttribute("numHomePages", proxy.getNumPages());
-		session.setAttribute("homePage", proxy.getPage());
-		session.setAttribute("ideas", proxy.getPagedData());
+	public void loadIdeasByPage(HttpSession session) {
+		Proxy<Idea> proxy = ideaService.loadByPage(session.getId(), (int) session.getAttribute("homePageOfIdeas"));
+		session.setAttribute("numHomePagesOfIdeas", proxy.getNumPages());
+		session.setAttribute("homePageOfIdeas", proxy.getPage());
+		session.setAttribute("homeIdeas", proxy.getPagedData());
 	}
 	
 	// ### Development ###
@@ -80,6 +88,8 @@ public class ServiceFacade {
 		User user = userService.loadByUsername(username);
 		session.setAttribute("user", user);
 		Idea idea = (Idea) session.getAttribute("idea");
+		idea = ideaService.loadById(idea.getId());
+		session.setAttribute("idea", idea);
 		Development development = developmentService.create(idea, link, user);
 		for (Development d : idea.getDevelopments()) {
 			if (d.getDeveloper().getUsername().equals(user.getUsername())) {
@@ -105,8 +115,8 @@ public class ServiceFacade {
 	}
 	
 	// ### IdeaVote ###
-	public void createIdeaVote(HttpSession session, String voter, Boolean upVote, int ideaId) {
-		User user = userService.loadByUsername(voter);
+	public void createIdeaVote(HttpSession session, String username, Boolean upVote, int ideaId) {
+		User user = userService.loadByUsername(username);
 		session.setAttribute("user", user);
 		Idea idea = (Idea) session.getAttribute("idea");
 		idea = ideaService.loadById(idea.getId());

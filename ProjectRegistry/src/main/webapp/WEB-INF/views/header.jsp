@@ -18,13 +18,16 @@
 	<table>
 		<tr>
 			<td><a href="<c:url value="/home" />">Home</a></td>
+			
 			<td><form name='searchBox' action="<c:url value='/user/search'/>" method='GET'>
 				<input type='text' name='keyword' placeholder="User Search" value=''>
 			</form></td>
+			
 			<td><c:url value="/j_spring_security_logout" var="logoutUrl"/>
 				<form action="${logoutUrl}" method="post" id="logoutForm">
 					<input type="hidden" name="${_csrf.parameterName}" value="{_csrf.token}"/>
 				</form>
+				
 				<c:choose>
 					<c:when test="${pageContext.request.userPrincipal.name != null}">
 						<a href="javascript:formSubmit()" > Logout</a>

@@ -15,7 +15,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import spring.Comparator.UserComparatorByVote;
 import spring.dao.UserDAO;
@@ -67,8 +66,9 @@ public class UserService {
 		Proxy<spring.model.User> proxy = sessionProxies.get(sessionId);
 		if (proxy == null) {
 			proxy = new Proxy<spring.model.User>();
+			sessionProxies.put(sessionId, proxy);
 		}
-		Set<spring.model.User> dataSet = new TreeSet<spring.model.User>(new UserComparatorByVote());
+		TreeSet<spring.model.User> dataSet = new TreeSet<spring.model.User>(new UserComparatorByVote());
 		dataSet.addAll(dao.loadByKeyword(keyword));
 		proxy.setPagedData(dataSet, page);
 		return proxy;

@@ -3,11 +3,13 @@ package spring.service;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import spring.Comparator.DevelopmentComparatorByVote;
 import spring.dao.DevelopmentDAO;
 import spring.model.Development;
 import spring.model.Idea;
@@ -53,13 +55,15 @@ public class DevelopmentService {
 		return development;
 	}
 	
-	public Proxy<Development> loadByPage(String sessionId, Idea idea, int page) {
+	public Proxy<Development> loadByPage(String sessionId, Set<Development> developments, int page) {
 		Proxy<Development> proxy = sessionProxies.get(sessionId);
 		if (proxy == null) {
 			proxy = new Proxy<Development>();
 			sessionProxies.put(sessionId, proxy);
 		}
-		proxy.setPagedData(idea.getDevelopments(), page);
+		Set<Development> orderedDevelopments = new TreeSet<Development>(new DevelopmentComparatorByVote());
+		orderedDevelopments.addAll(developments);
+		proxy.setPagedData(orderedDevelopments, page);
 		return proxy;
 	}
 }

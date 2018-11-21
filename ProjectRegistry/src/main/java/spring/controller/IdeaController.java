@@ -35,31 +35,29 @@ public class IdeaController extends AbstractController {
 	
 	@GetMapping("/idea")
 	public ModelAndView idea(@RequestParam(value="id", required=false) Integer id,
-							 @RequestParam(value="developmentPage", required=false) Integer developmentPage,
-							 @RequestParam(value="commentPage", required=false) Integer commentPage,
+							 @RequestParam(value="ideaPageOfDevelopments", required=false) Integer ideaPageOfDevelopments,
+							 @RequestParam(value="ideaPageOfComments", required=false) Integer ideaPageOfComments,
 							 HttpSession session) {
 		ModelAndView model = new ModelAndView();
 		model.setViewName("idea");
-		if (id == null) {
-			id = (Integer) session.getAttribute("ideaId");
-		} else {
+		if (id != null) {
 			session.setAttribute("ideaId", id);
 		}
-		if (developmentPage == null) {
-			if (session.getAttribute("developmentPage") == null) {
-				developmentPage = 1;
-			} else {
-				developmentPage = (Integer) session.getAttribute("developmentPage");
+		if (ideaPageOfDevelopments == null) {
+			if (session.getAttribute("ideaPageOfDevelopments") == null) {
+				session.setAttribute("ideaPageOfDevelopments", 1);
 			}
+		} else {
+			session.setAttribute("ideaPageOfDevelopments", ideaPageOfDevelopments);
 		}
-		if (commentPage == null) {
-			if (session.getAttribute("commentPage") == null) {
-				commentPage = 1;
-			} else {
-				commentPage = (Integer) session.getAttribute("commentPage");
+		if (ideaPageOfComments == null) {
+			if (session.getAttribute("ideaPageOfComments") == null) {
+				session.setAttribute("ideaPageOfComments", 1);
 			}
+		} else {
+			session.setAttribute("ideaPageOfComments", ideaPageOfComments);
 		}
-		serviceFacade.loadIdea(session, id, developmentPage, commentPage);
+		serviceFacade.loadIdea(session);
 		return model;
 	}
 	

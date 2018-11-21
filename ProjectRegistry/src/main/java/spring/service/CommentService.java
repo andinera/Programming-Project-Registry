@@ -4,14 +4,15 @@ import java.util.GregorianCalendar;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import spring.Comparator.CommentComparatorByVote;
 import spring.dao.CommentDAO;
 import spring.model.Comment;
-import spring.model.Idea;
 import spring.model.User;
 import spring.proxy.Proxy;
 
@@ -54,13 +55,15 @@ public class CommentService {
 		return comment;
 	}
 	
-	public Proxy<Comment> loadByPage(String sessionId, Idea idea, int page) {
+	public Proxy<Comment> loadByPage(String sessionId, Set<Comment> comments, int page) {
 		Proxy<Comment> proxy = sessionProxies.get(sessionId);
 		if (proxy == null) {
 			proxy = new Proxy<Comment>();
 			sessionProxies.put(sessionId, proxy);
 		}
-		proxy.setPagedData(idea.getComments(), page);
+		Set<Comment> orderedComments = new TreeSet<Comment>(new CommentComparatorByVote());
+		orderedComments.addAll(comments);
+		proxy.setPagedData(orderedComments, page);
 		return proxy;
 		
 	}

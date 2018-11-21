@@ -5,7 +5,7 @@ import java.util.Comparator;
 import spring.model.Development;
 
 
-public class DevelopmentComparator implements Comparator<Development> {
+public class DevelopmentComparatorByVote implements Comparator<Development> {
 
 	@Override
 	public int compare(Development left, Development right) {

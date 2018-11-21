@@ -31,12 +31,13 @@ public class IdeaDAO extends DAO {
 	@SuppressWarnings("unchecked")
 	public List<Idea> loadAll() {
 		List<Idea> ideas = sessionFactory.getCurrentSession()
-										 .createQuery("select distinct i from Idea i "
-										 		+ "left join fetch i.votes "
-									 	 		+ "left join fetch i.developments d "
-									 	 		+ "left join fetch i.comments c "
-									 	 		+ "left join fetch d.votes "
-									 	 		+ "left join fetch c.votes")
+										 .createQuery("select distinct i from Idea i"
+										 		+ " left join fetch i.poster"
+										 		+ " left join fetch i.votes"
+									 	 		+ " left join fetch i.developments d"
+									 	 		+ " left join fetch i.comments c"
+									 	 		+ " left join fetch d.votes"
+									 	 		+ " left join fetch c.votes")
 										 .list();
 		return ideas;
 	}

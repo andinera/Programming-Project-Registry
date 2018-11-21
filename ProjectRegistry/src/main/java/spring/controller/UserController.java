@@ -36,30 +36,48 @@ public class UserController extends AbstractController {
 	
 	@GetMapping("/user/profile")
 	public ModelAndView userProfile(@RequestParam(value="username", required=false) String username,
+									@RequestParam(value="userPageOfIdeas", required=false) Integer userPageOfIdeas,
+									@RequestParam(value="userPageOfDevelopments", required=false) Integer userPageOfDevelopments,
 									HttpSession session) {
 		ModelAndView model = new ModelAndView();
-		serviceFacade.loadUser(session, username);
+		if (username != null) {
+			session.setAttribute("username", username);
+		}
+		if (userPageOfIdeas == null) {
+			if (session.getAttribute("userPageOfIdeas") == null) {
+				session.setAttribute("userPageOfIdeas", 1);
+			} 
+		} else {
+			session.setAttribute("userPageOfIdeas", userPageOfIdeas);
+		}
+		if (userPageOfDevelopments == null) {
+			if (session.getAttribute("userPageOfDevelopments") == null) {
+				session.setAttribute("userPageOfDevelopments", 1);
+			}
+		} else {
+			session.setAttribute("userPageOfDevelopments", userPageOfDevelopments);
+		}
+		serviceFacade.loadUser(session);
 		model.setViewName("userProfile");
 		return model;
 	}
 	
 	@GetMapping("/user/search")
 	public ModelAndView userSearch(@RequestParam(value="keyword", required=false) String keyword,
-								   @RequestParam(value="userPage", required=false) Integer userPage,
+								   @RequestParam(value="searchPageOfUsers", required=false) Integer searchPageOfUsers,
 								   HttpSession session) {
 		ModelAndView model = new ModelAndView();
-		if (keyword == null) {
-			keyword = (String) session.getAttribute("keyword");
+		if (keyword != null) {
+			session.setAttribute("keyword", keyword);
 		}
-		if (userPage == null) {
-			if (session.getAttribute("userPage") == null) {
-				userPage = 1;
-			} else {
-				userPage = (Integer) session.getAttribute("userPage");
-			}
+		if (searchPageOfUsers == null) {
+			if (session.getAttribute("searchPageOfUsers") == null) {
+				session.setAttribute("searchPageOfUsers", 1);
+			} 
+		} else {
+			session.setAttribute("searchPageOfUsers", searchPageOfUsers);
 		}
-		session.setAttribute("keyword", keyword);
-		serviceFacade.loadUsersByKeyword(session, keyword, userPage);
+		serviceFacade.loadUsersByKeyword(session);
 		model.setViewName("userSearch");
 		return model;
 	}

@@ -30,7 +30,7 @@
 			<td><br></td>
 		</tr>
 		<tr>
-			<td>${idea.getDescription()}</td>
+			<td colspan=2>${idea.getDescription()}</td>
 		</tr>
 		<tr>
 			<td><br></td>
@@ -91,11 +91,11 @@
 		</c:forEach>
 		<tr>
 			<td colspan=3 align=center>
-				<a href="<c:url value='/idea?developmentPage=${developmentPage-1}' />">&laquo;</a>
+				<a href="<c:url value='/idea?ideaPageOfDevelopments=${developmentPage-1}' />">&laquo;</a>
 				<c:forEach begin="1" end="${numDevelopmentPages}" var="page">
-				    <a href="<c:url value='/idea?developmentPage=${page}' />">${page}</a>
+				    <a href="<c:url value='/idea?ideaPageOfDevelopments=${page}' />">${page}</a>
 				</c:forEach>
-				<a href="<c:url value='/idea?developmentPage=${developmentPage+1}' />">&raquo;</a>
+				<a href="<c:url value='/idea?ideaPageOfDevelopments=${developmentPage+1}' />">&raquo;</a>
 			</td>
 		</tr>
 	</table>
@@ -143,11 +143,11 @@
 		</c:forEach>
 		<tr>
 			<td colspan=3 align=center>
-				<a href="<c:url value='/idea?commentPage=${commentPage-1}' />">&laquo;</a>
+				<a href="<c:url value='/idea?ideaPageOfComments=${commentPage-1}' />">&laquo;</a>
 				<c:forEach begin="1" end="${numCommentPages}" var="page">
-				    <a href="<c:url value='/idea?commentPage=${page}' />">${page}</a>
+				    <a href="<c:url value='/idea?ideaPageOfComments=${page}' />">${page}</a>
 				</c:forEach>
-				<a href="<c:url value='/idea?commentPage=${commentPage+1}' />">&raquo;</a>
+				<a href="<c:url value='/idea?ideaPageOfComments=${commentPage+1}' />">&raquo;</a>
 			</td>
 		</tr>
 	</table>
