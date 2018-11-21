@@ -11,9 +11,24 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
 
+/**
+ * Controller handles all requests for URLs beginning with "/user".
+ * This controller is designed for the creation and manipulation of {@link spring.model.User} 
+ * objects.
+ * 
+ * @author Shane Lockwood
+ *
+ */
 @Controller
 public class UserController extends AbstractController {
 
+	/**
+	 * Loads the form for creating a new {@link spring.model.User}.
+	 * 
+	 * @param session The HttpSession passed between the client and server.
+	 * @param request The HttpServletRequest which stores the UserPrincipal.
+	 * @return model
+	 */
 	@GetMapping("/user/new/form")
 	public ModelAndView newUserPage(HttpSession session,
 									HttpServletRequest request) {
@@ -23,6 +38,15 @@ public class UserController extends AbstractController {
 		return model;
 	}
 	
+	/**
+	 * Accepts parameters from the new user form to create and save a {@link spring.model.User} 
+	 * object.
+	 * 
+	 * @param username The String containing the username provided by the client.
+	 * @param password The String containing the password provided by the client.
+	 * @param session The HttpSession passed between the client and server.
+	 * @return model
+	 */
 	@PostMapping("/user/new/create")
 	public RedirectView newUser(@RequestParam(value="username", required=true) String username,
 								@RequestParam(value="password", required=true) String password,
@@ -34,6 +58,18 @@ public class UserController extends AbstractController {
 		return view;
 	}
 	
+	/**
+	 * Loads the user profile view provided the {@link spring.model.User}'s username with a 
+	 * subset of {@link spring.model.Idea}s and {@link spring.model.Development}s.
+	 * 
+	 * @param username The String containing the username provided by the client.
+	 * @param userPageOfIdeas The Integer representing the desired subset of 
+	 * {@link spring.model.Idea}s to display.
+	 * @param userPageOfDevelopments The Integer representing the desired subset of 
+	 * {@link spring.model.Development}s to display.
+	 * @param session The HttpSession passed between the client and server.
+	 * @return model
+	 */
 	@GetMapping("/user/profile")
 	public ModelAndView userProfile(@RequestParam(value="username", required=false) String username,
 									@RequestParam(value="userPageOfIdeas", required=false) Integer userPageOfIdeas,
@@ -62,6 +98,16 @@ public class UserController extends AbstractController {
 		return model;
 	}
 	
+	/**
+	 * Loads the user search view with a subset of all {@link spring.model.User}s with a username 
+	 * that contains the passed keyword.
+	 * 
+	 * @param keyword The String containing the keyword provided by the client.
+	 * @param searchPageOfUsers The Integer representing the desired subset of 
+	 * {@link spring.model.User}s to display.
+	 * @param session The HttpSession passed between the client and server.
+	 * @return model
+	 */
 	@GetMapping("/user/search")
 	public ModelAndView userSearch(@RequestParam(value="keyword", required=false) String keyword,
 								   @RequestParam(value="searchPageOfUsers", required=false) Integer searchPageOfUsers,

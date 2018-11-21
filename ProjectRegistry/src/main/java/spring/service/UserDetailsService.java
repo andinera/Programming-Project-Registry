@@ -20,6 +20,13 @@ import org.springframework.transaction.annotation.Transactional;
 import spring.dao.UserDAO;
 import spring.model.UserRole;
 
+
+/**
+ * Service required for handling user login/logout functionality.
+ * 
+ * @author Shane Lockwood
+ *
+ */
 @Service("userDetailsService")
 public class UserDetailsService implements UserDetailsManager {
 
@@ -31,6 +38,13 @@ public class UserDetailsService implements UserDetailsManager {
 	private PasswordEncoder passwordEncoder;
 	
 	
+	/**
+	 * Creates a {@link spring.model.User} with the "ROLE_IDEATER" role and saves it to a 
+	 * database.
+	 * 
+	 * @param userDetails The UserDetails containing information for creating a 
+	 * {@link spring.model.User}.
+	 */
 	@Transactional
 	@Override
 	public void createUser(UserDetails userDetails) {
@@ -41,6 +55,13 @@ public class UserDetailsService implements UserDetailsManager {
 		dao.save(user);
 	}
 	
+	/**
+	 * Loads a {@link spring.model.User} from a database and converts it to a UserDetails.
+	 * 
+	 * @param username The String representing the username of the {@link spring.model.User} to
+	 * be loaded.
+	 * @throws UsernameNotFoundException
+	 */
 	@Override
 	@Transactional(readOnly=true)
 	public UserDetails loadUserByUsername(final String username) throws UsernameNotFoundException {

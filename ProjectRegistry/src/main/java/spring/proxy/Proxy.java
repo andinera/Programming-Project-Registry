@@ -7,6 +7,14 @@ import java.util.Set;
 import java.lang.Math;
 
 
+/**
+ * Acts as a proxy to store and return partitioned data and associated metadata. Pagesize 
+ * represents the size of the partitioned subsets and page is the stored subset with 1-based 
+ * numbering.
+ * 
+ * @author Shane Lockwood
+ *
+ */
 public class Proxy<T> {
 	
 	private Set<T> pagedData;
@@ -15,6 +23,12 @@ public class Proxy<T> {
 	private int page = 1;
 
 	
+	/**
+	 * Partitions and stores a subset of passed data.
+	 * 
+	 * @param data The Set<T> represents the data to be proxied.
+	 * @param page The Integer represents which subset of the data to store.
+	 */
 	public void setPagedData(Set<T> data, Integer page) {
 		setNumPages(data);
 		setPage(page);
@@ -28,30 +42,55 @@ public class Proxy<T> {
 		pagedData = new HashSet<T>(list);
 	}
 	
+	/**
+	 * Returns the stored subset of data.
+	 * 
+	 * @return Set<T>
+	 */
 	public Set<T> getPagedData() {
 		return pagedData;
 	}
 	
+	/**
+	 * Sets/modifies the page size.
+	 * 
+	 * @param pageSize The int representing the page size.
+	 */
 	public void setPageSize(int pageSize) {
 		this.pageSize = pageSize;
 	}
 	
+	/**
+	 * Returns the page size.
+	 * 
+	 * @return int
+	 */
 	public int getPageSize() {
 		return pageSize;
 	}
 	
-	public void setNumPages(Set<T> data) {
+	private void setNumPages(Set<T> data) {
 		this.numPages = (int)Math.ceil((double)data.size() / getPageSize());
 	}
 	
+	/**
+	 * Returns the number of pages the data could partition into given the page size.
+	 * 
+	 * @return int
+	 */
 	public int getNumPages() {
 		return numPages;
 	}
 	
-	public void setPage(int page) {
+	private void setPage(int page) {
 		this.page = Math.max(1, Math.min(page, numPages));
 	}
 	
+	/**
+	 * Returns the page selected for partitioning.
+	 * 
+	 * @return int
+	 */
 	public int getPage() {
 		return this.page;
 	}

@@ -18,6 +18,12 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 
+/**
+ * Model's a user's comment.
+ * 
+ * @author Shane Lockwood
+ *
+ */
 @Entity
 @Table(name="comments")
 public class Comment {
@@ -33,12 +39,24 @@ public class Comment {
 	private Comment() {
 	}
 	
+	/**
+	 * Construct a Comment.
+	 * 
+	 * @param commenter The {@link spring.model.User} creating the comment.
+	 * @param dateTimePosted The GregorianCalendar of the time the comment is created.
+	 * @param comment The String representing the comment.
+	 */
 	public Comment(User commenter, GregorianCalendar dateTimePosted, String comment) {
 		setCommenter(commenter);
 		setDateTimePosted(dateTimePosted);
 		setComment(comment);
 	}
 	
+	/**
+	 * Returns the id. The id is auto-generated when this object is persisted.
+	 * 
+	 * @return int
+	 */
 	@Id
 	@GeneratedValue(strategy=IDENTITY)
 	@Column(name="id", unique=true, nullable=false)
@@ -52,6 +70,11 @@ public class Comment {
 		return this;
 	}
 	
+	/**
+	 * Returns the commenter.
+	 * 
+	 * @return {@link spring.model.User}
+	 */
 	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="username", nullable=false)
 	public User getCommenter() {
@@ -63,6 +86,11 @@ public class Comment {
 		return this;
 	}
 	
+	/**
+	 * Returns the datetime the comment was posted.
+	 * 
+	 * @return GregorianCalendar
+	 */
 	@Column(name="dateTimePosted", nullable=false)
 	public GregorianCalendar getDateTimePosted() {
 		return this.dateTimePosted;
@@ -73,16 +101,30 @@ public class Comment {
 		return this;
 	}
 	
+	/**
+	 * Returns the comment.
+	 * 
+	 * @return String
+	 */
 	@Column(name="comment", nullable=false, length=512)
 	public String getComment() {
 		return this.comment;
 	}
 	
-	public Comment setComment(String comment) {
+	/**
+	 * Sets/modifies the comment.
+	 * 
+	 * @param comment The String representing the comment.
+	 */
+	public void setComment(String comment) {
 		this.comment = comment;
-		return this;
 	}
 	
+	/**
+	 * Returns a Set of mapped votes;
+	 * 
+	 * @return Set&lt;{@link spring.model.CommentVote}&gt;
+	 */
 	@OneToMany(fetch=FetchType.LAZY, mappedBy="comment", cascade=CascadeType.ALL)
 	public Set<CommentVote> getVotes() {
 		return this.votes;
@@ -94,18 +136,28 @@ public class Comment {
 		return this;
 	}
 	
-	public Comment addVote(CommentVote vote) {
+	/**
+	 * Appends the vote to the List of previous votes. If a vote mapped to the same 
+	 * {@link spring.model.User} exists, the existing vote is modified.
+	 * 
+	 * @param vote {@link spring.model.CommentVote}
+	 */
+	public void addVote(CommentVote vote) {
 		for (CommentVote v : getVotes()) {
 			if (v.getVoter().getUsername().equals(vote.getVoter().getUsername())
 					&& v.getComment().getId() == vote.getComment().getId()) {
 				v.setUpVote(vote.getUpVote());
-				return this;
 			}
 		}
 		this.getVotes().add(vote);
-		return this;
 	}
 	
+	/**
+	 * Returns the sum of mapped votes with a true upVote subtracted by the sum of mapped votes
+	 * with a false upVote.
+	 * 
+	 * @return int.
+	 */
 	public int voteCount() {
 		int count = 0;
 		for (CommentVote vote : this.getVotes()) {

@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"spring.comparator"},{"l":"spring.config"},{"l":"spring.controller"},{"l":"spring.dao"},{"l":"spring.model"},{"l":"spring.proxy"},{"l":"spring.service"}]

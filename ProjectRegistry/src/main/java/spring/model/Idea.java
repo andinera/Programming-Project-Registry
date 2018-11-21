@@ -18,10 +18,16 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import spring.Comparator.CommentComparatorByVote;
-import spring.Comparator.DevelopmentComparatorByVote;
+import spring.comparator.CommentComparatorByVote;
+import spring.comparator.DevelopmentComparatorByVote;
 
 
+/**
+ * Models a user's idea.
+ * 
+ * @author Shane Lockwood
+ *
+ */
 @Entity
 @Table(name="ideas")
 public class Idea {
@@ -40,6 +46,14 @@ public class Idea {
 	public Idea() {	
 	}
 	
+	/**
+	 * Construct an Idea.
+	 * 
+	 * @param title The String representing the title of the idea.
+	 * @param description The String representing the description of the idea.
+	 * @param poster The {@link spring.model.User} representing the poster of the idea.
+	 * @param datePosted The GregorianCalendar representing the time the idea was created.
+	 */
 	public Idea(String title, String description, User poster, GregorianCalendar datePosted) {
 		setTitle(title);
 		setDescription(description);
@@ -48,6 +62,11 @@ public class Idea {
 		setDateModified(datePosted);
 	}
 	
+	/**
+	 * Returns the id. The id is auto-generated when this object is persisted.
+	 * 
+	 * @return int
+	 */
 	@Id
 	@GeneratedValue(strategy=IDENTITY)
 	@Column(name="id", unique=true, nullable=false)
@@ -56,85 +75,129 @@ public class Idea {
 	}
 	
 	@SuppressWarnings("unused")
-	private Idea setId(int id) {
+	private void setId(int id) {
 		this.id = id;
-		return this;
 	}
 	
+	/**
+	 * Returns the title.
+	 * 
+	 * @return String
+	 */
 	@Column(name="title", nullable=false, length=255)
 	public String getTitle() {
 		return this.title;
 	}
 	
-	public Idea setTitle(String title) {
+	public void setTitle(String title) {
 		this.title = title;
-		return this;
 	}
 	
+	/**
+	 * Returns the description.
+	 * 
+	 * @return String
+	 */
 	@Column(name="description", nullable=false, length=2048)
 	public String getDescription() {
 		return this.description;
 	}
 	
-	public Idea setDescription(String description) {
+	/**
+	 * Sets/modifies the description.
+	 * 
+	 * @param description The String representing the description.
+	 */
+	public void setDescription(String description) {
 		this.description = description;
-		return this;
 	}
 	
+	/**
+	 * Returns the datetime the idea was posted.
+	 * 
+	 * @return GregorianCalendar
+	 */
 	@Column(name="datePosted", nullable=false)
 	public GregorianCalendar getDatePosted() {
 		return this.datePosted;
 	}
 	
-	private Idea setDatePosted(GregorianCalendar datePosted) {
+	private void setDatePosted(GregorianCalendar datePosted) {
 		this.datePosted = datePosted;
-		return this;
 	}
 	
+	/**
+	 * Returns the datetime the idea was modified.
+	 * 
+	 * @return GregorianCalendar
+	 */
 	@Column(name="dateModified", nullable=false)
 	public GregorianCalendar getDateModified() {
 		return this.dateModified;
 	}
 	
-	public Idea setDateModified(GregorianCalendar dateModified) {
+	/**
+	 * Sets/modifies the datetime the idea was modified.
+	 * 
+	 * @param dateModified The GregorianCalendar representing the datetime the idea was modified.
+	 */
+	public void setDateModified(GregorianCalendar dateModified) {
 		this.dateModified = dateModified;
-		return this;
 	}
 	
+	/**
+	 * Returns the poster.
+	 * 
+	 * @return {@link spring.model.User}
+	 */
 	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="username", nullable=false)
 	public User getPoster() {
 		return this.poster;
 	}
 	
-	private Idea setPoster(User poster) {
+	private void setPoster(User poster) {
 		this.poster = poster;
-		return this;
 	}
 	
+	/**
+	 * Returns the votes associated with this Idea.
+	 * 
+	 * @return Set&lt;{@link spring.model.IdeaVote}&gt;
+	 */
 	@OneToMany(fetch=FetchType.LAZY, mappedBy="idea", cascade=CascadeType.ALL)
 	public Set<IdeaVote> getVotes() {
 		return this.votes;
 	}
 	
 	@SuppressWarnings("unused")
-	private Idea setVotes(Set<IdeaVote> votes) {
+	private void setVotes(Set<IdeaVote> votes) {
 		this.votes = votes;
-		return this;
 	}
 	
-	public Idea addVote(IdeaVote vote) {
+	/**
+	 * Appends the vote to the List of previous votes. If a vote mapped to the same 
+	 * {@link spring.model.Idea} and {@link spring.model.User} exists, the existing vote is 
+	 * modified.
+	 * 
+	 * @param vote {@link spring.model.IdeaVote}
+	 */
+	public void addVote(IdeaVote vote) {
 		for (IdeaVote v : getVotes()) {
 			if (v.getVoter().getUsername().equals(vote.getVoter().getUsername())
 					&& v.getIdea().getId() == vote.getIdea().getId()) {
 				v.setUpVote(vote.getUpVote());
-				return this;
 			}
 		}
 		this.getVotes().add(vote);
-		return this;
 	}
 	
+	/**
+	 * Returns the sum of mapped votes with a true upVote subtracted by the sum of mapped votes
+	 * with a false upVote.
+	 * 
+	 * @return int.
+	 */
 	public int voteCount() {
 		int count = 0;
 		for (IdeaVote vote : this.getVotes()) {
@@ -147,34 +210,59 @@ public class Idea {
 		return count;
 	}
 	
+	/**
+	 * Returns the mapped developments.
+	 * 
+	 * @return Set&lt;{@link spring.model.Development}&gt;
+	 */
 	@OneToMany(fetch=FetchType.LAZY, mappedBy="idea", cascade=CascadeType.ALL)
 	public Set<Development> getDevelopments() {
 		return this.developments;
 	}
 	
-	public Idea setDevelopments(Set<Development> developments) {
+	@SuppressWarnings("unused")
+	private void setDevelopments(Set<Development> developments) {
 		this.developments = developments;
-		return this;
 	}
 	
-	public Idea addDevelopment(Development development) {
+	/**
+	 * Appends the {@link spring.model.Development} to the List of previous developments. If a 
+	 * {@link spring.model.Development} mapped to the same 
+	 * {@link spring.model.User} exists, nothing happens.
+	 * 
+	 * @param development The {@link spring.model.Development} to append.
+	 */
+	public void addDevelopment(Development development) {
+		for (Development d : getDevelopments()) {
+			if (d.getDeveloper().getUsername().equals(development.getDeveloper().getUsername())) {
+				return;
+			}
+		}
 		this.developments.add(development);
-		return this;
 	}
 	
+	/**
+	 * Returns the mapped {@link spring.model.Comment}s.
+	 * 
+	 * @return Set&lt;{@link spring.model.Comment}&gt;
+	 */
 	@OneToMany(fetch=FetchType.LAZY, cascade=CascadeType.ALL)
 	@JoinColumn(name="comments", nullable=false)
 	public Set<Comment> getComments() {
 		return this.comments;
 	}
 	
-	public Idea setComments(Set<Comment> comments) {
+	@SuppressWarnings("unused")
+	private void setComments(Set<Comment> comments) {
 		this.comments = comments;
-		return this;
 	}
 	
-	public Idea addComment(Comment comment) {
+	/**
+	 * Appends the {@link spring.model.Comment} to the List of previous comments. 
+	 * 
+	 * @param comment The {@link spring.model.Comment} to append.
+	 */
+	public void addComment(Comment comment) {
 		this.comments.add(comment);
-		return this;
 	}
 }

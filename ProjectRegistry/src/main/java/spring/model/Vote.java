@@ -11,6 +11,12 @@ import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
 
 
+/**
+ * Models the similarities between the entity specific votes.
+ * 
+ * @author Shane Lockwood
+ *
+ */
 @MappedSuperclass
 abstract public class Vote {
 	
@@ -22,11 +28,20 @@ abstract public class Vote {
 	protected Vote() {
 	}
 	
-	public Vote(User voter, boolean upVote) {
+	/**
+	 * @param voter The @{link spring.model.User} representing the voter.
+	 * @param upVote The boolean representing true/false for upvote/downvote.
+	 */
+	protected Vote(User voter, boolean upVote) {
 		setVoter(voter);
 		setUpVote(upVote);
 	}
 
+	/**
+	 * Returns the id.
+	 * 
+	 * @return int
+	 */
 	@Id
 	@GeneratedValue(strategy=IDENTITY)
 	@Column(name="id", unique=true, nullable=false)
@@ -39,6 +54,11 @@ abstract public class Vote {
 		this.id = id;
 	}
 	
+	/**
+	 * Returns the voter.
+	 * 
+	 * @return {@link spring.model.User}
+	 */
 	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="username", nullable=false)
 	public User getVoter() {
@@ -49,11 +69,21 @@ abstract public class Vote {
 		this.voter = voter;
 	}
 	
+	/**
+	 * Returns true/false for upvote/downvote.
+	 * 
+	 * @return boolean
+	 */
 	@Column(name="upVote", nullable=false)
 	public boolean getUpVote() {
 		return this.upVote;
 	}
 	
+	/**
+	 * Sets/modifies the vote status such that true/false is upvote/downvote.
+	 * 
+	 * @param upVote The boolean representing the vote status.
+	 */
 	public void setUpVote(boolean upVote) {
 		this.upVote = upVote;
 	}

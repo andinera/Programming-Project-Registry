@@ -1,7 +1,6 @@
 package spring.dao;
 
 import java.io.Serializable;
-import java.util.List;
 
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -9,9 +8,22 @@ import org.springframework.transaction.annotation.Transactional;
 import spring.model.Development;
 
 
+/**
+ * Loads {@link spring.model.Development}s from a database.
+ * 
+ * @author Shane Lockwood
+ *
+ */
 @Repository("developmentDAO")
 public class DevelopmentDAO extends DAO {
 	
+	/**
+	 * Loads a single {@link spring.model.Development} from  adatabase.
+	 * 
+	 * @param id The Integer which identifies the {@link spring.model.Development} to load from a 
+	 * database.
+	 * @return {@link spring.model.Development}
+	 */
 	@Transactional
 	public Development loadById(Serializable id) {
 		Development development = (Development) sessionFactory.getCurrentSession()
@@ -21,14 +33,5 @@ public class DevelopmentDAO extends DAO {
 															  .setParameter("id", (int) id)
 															  .uniqueResult();
 		return development;
-	}
-	
-	@Transactional
-	@SuppressWarnings("unchecked")
-	public List<Development> loadAll() {
-		List<Development> developments = sessionFactory.getCurrentSession()
-											     	   .createQuery("from Development")
-											     	   .list();
-		return developments;
 	}
 }

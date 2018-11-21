@@ -9,9 +9,22 @@ import org.springframework.transaction.annotation.Transactional;
 import spring.model.Idea;
 
 
+/**
+ * Loads {@link spring.model.Idea}s from a database.
+ * 
+ * @author Shane Lockwood
+ *
+ */
 @Repository("ideaDAO")
 public class IdeaDAO extends DAO {
 	
+	/**
+	 * Loads a single {@link spring.model.Idea} from a database.
+	 * 
+	 * @param id The Integer which identifies the {@link spring.model.Idea} to load from a 
+	 * database.
+	 * @return {@link spring.model.Idea}
+	 */
 	@Transactional
 	public Idea loadById(Serializable id) {
 		Idea idea = (Idea) sessionFactory.getCurrentSession()
@@ -27,6 +40,11 @@ public class IdeaDAO extends DAO {
 		return idea;
 	}
 	
+	/**
+	 * Loads all {@link spring.model.Idea}s from a database.
+	 * 
+	 * @return List&lt;{@link spring.model.Idea}&gt;
+	 */
 	@Transactional
 	@SuppressWarnings("unchecked")
 	public List<Idea> loadAll() {

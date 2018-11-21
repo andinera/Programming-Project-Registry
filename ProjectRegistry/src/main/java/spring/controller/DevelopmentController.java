@@ -11,9 +11,22 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
 
+/**
+ * Controller handles all requests for URLs beginning with "/development".
+ * This controller is designed for the creation and manipulation of 
+ * {@link spring.model.Development} objects.
+ * 
+ * @author Shane Lockwood
+ *
+ */
 @Controller
 public class DevelopmentController extends AbstractController {
 
+	/**
+	 * Loads the form for creating a new {@link spring.model.Development}.
+	 * 
+	 * @return model
+	 */
 	@GetMapping("/development/new/form")
 	public ModelAndView postDevelopment() {
 		ModelAndView model = new ModelAndView();
@@ -21,6 +34,15 @@ public class DevelopmentController extends AbstractController {
 		return model;
 	}
 	
+	/**
+	 * Accepts parameters from the new development form to create and save a 
+	 * {@link spring.model.Development} object.
+	 * 
+	 * @param link The String containing the link provided by the client.
+	 * @param session The HttpSession passed between the client and server.
+	 * @param request The HttpServletRequest which stores the UserPrincipal.
+	 * @return model
+	 */
 	@PostMapping("/development/new/create")
 	public RedirectView newDevelopment(@RequestParam(value="link", required=true) String link,
 									   HttpSession session,
@@ -32,6 +54,15 @@ public class DevelopmentController extends AbstractController {
 		return view;
 	}
 	
+	/**
+	 * Adds or modifies a {@link spring.model.DevelopmentVote}.
+	 * 
+	 * @param upVote The String representation of a boolean.
+	 * @param developmentId The Integer for the associated {@link spring.model.Development}.
+	 * @param session The HttpSession passed between the client and server.
+	 * @param request The HttpServletRequest which stores the UserPrincipal.
+	 * @return model
+	 */
 	@PostMapping("/development/new/vote")
 	public RedirectView developmentVote(@RequestParam(value="upVote", required=true) String upVote,
 								   		@RequestParam(value="developmentId", required=true) String developmentId,
