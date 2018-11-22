@@ -187,18 +187,6 @@
     		</configuration>
     	</plugin>
     	<plugin>
-    		<groupId>org.apache.maven.plgins</groupId>
-    		<artifactId>maven-surefire-plugin</artifactId>
-    		<version>2.22.0</version>
-   			<dependencies>
-			    <dependency>
-					<groupId>org.junit.platform</groupId>
-					<artifactId>junit-platform-surefire-provider</artifactId>
-					<version>{org.junit.platform.version}</version>
-				</dependency>
-			</dependencies>
-    	</plugin>
-    	<plugin>
     		<groupId>org.apache.tomcat.maven</groupId>
     		<artifactId>tomcat7-maven-plugin</artifactId>
     		<version>${tomcat.version}</version>
