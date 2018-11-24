@@ -1,9 +1,9 @@
 package spring.proxy;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 import java.lang.Math;
 
 
@@ -17,8 +17,8 @@ import java.lang.Math;
  */
 public class Proxy<T> {
 	
-	private Set<T> pagedData;
-	private int pageSize = 1;
+	private List<T> pagedData;
+	private int pageSize = 2;
 	private int numPages = 0;
 	private int page = 1;
 
@@ -38,8 +38,7 @@ public class Proxy<T> {
 		} else {
 			lastIndex = getPage()*pageSize;
 		}
-		List<T> list = (new ArrayList<T>(data)).subList((getPage()-1)*pageSize, lastIndex);
-		pagedData = new HashSet<T>(list);
+		pagedData = (new ArrayList<T>(data)).subList((getPage()-1)*pageSize, lastIndex);
 	}
 	
 	/**
@@ -47,7 +46,7 @@ public class Proxy<T> {
 	 * 
 	 * @return Set<T>
 	 */
-	public Set<T> getPagedData() {
+	public List<T> getPagedData() {
 		return pagedData;
 	}
 	

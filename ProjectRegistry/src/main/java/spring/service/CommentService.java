@@ -2,6 +2,7 @@ package spring.service;
 
 import java.util.GregorianCalendar;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
@@ -82,7 +83,7 @@ public class CommentService {
 	 */
 	public Comment loadById(String sessionId, int id) {
 		Proxy<Comment> proxy = sessionProxies.get(sessionId);
-		Set<Comment> comments = proxy.getPagedData();
+		List<Comment> comments = proxy.getPagedData();
 		for (Comment comment : comments) {
 			if (comment.getId() == id) {
 				return comment;

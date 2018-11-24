@@ -1,6 +1,7 @@
 package spring.service;
 
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
@@ -83,7 +84,7 @@ public class DevelopmentService {
 	 */
 	public Development loadById(String sessionId, int id) {
 		Proxy<Development> proxy = sessionProxies.get(sessionId);
-		Set<Development> developments = proxy.getPagedData();
+		List<Development> developments = proxy.getPagedData();
 		for (Development development : developments) {
 			if (development.getId() == id) {
 				return development;

@@ -88,10 +88,17 @@ public class UserService {
 	 */
 	public spring.model.User loadByUsername(String sessionId, String username) {
 		Proxy<spring.model.User> proxy = sessionProxies.get(sessionId);
-		Set<spring.model.User> users = proxy.getPagedData();
-		for (spring.model.User user : users) {
-			if (user.getUsername().equals(username)) {
-				return user;
+		if (proxy == null) {
+			proxy = new Proxy<spring.model.User>();
+			sessionProxies.put(sessionId, proxy);
+		} else {
+			List<spring.model.User> users = proxy.getPagedData();
+			if (users != null) {
+				for (spring.model.User user : users) {
+					if (user.getUsername().equals(username)) {
+						return user;
+					}
+				}
 			}
 		}
 		return dao.loadById(username);

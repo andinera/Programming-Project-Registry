@@ -34,8 +34,11 @@ public class User {
 	private Set<Development> developments = new TreeSet<Development>(new DevelopmentComparatorByVote());
 	
 	
-	@SuppressWarnings("unused")
-	private User() {
+	/**
+	 * Constructs a User. Required for Hibernate to load a User from a 
+	 * database.
+	 */
+	public User() {
 	}
 	
 	/**

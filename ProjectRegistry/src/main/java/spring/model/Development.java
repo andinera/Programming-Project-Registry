@@ -146,6 +146,7 @@ public class Development {
 			if (v.getVoter().getUsername().equals(vote.getVoter().getUsername())
 					&& v.getDevelopment().getId() == vote.getDevelopment().getId()) {
 				v.setUpVote(vote.getUpVote());
+				return;
 			}
 		}
 		this.getVotes().add(vote);

@@ -187,6 +187,7 @@ public class Idea {
 			if (v.getVoter().getUsername().equals(vote.getVoter().getUsername())
 					&& v.getIdea().getId() == vote.getIdea().getId()) {
 				v.setUpVote(vote.getUpVote());
+				return;
 			}
 		}
 		this.getVotes().add(vote);

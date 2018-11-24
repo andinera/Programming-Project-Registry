@@ -83,8 +83,11 @@ public class IdeaService {
 		for (Idea i : sharedIdeas) {
 			if (i.getId() == idea.getId()) {
 				i = idea;
+				break;
 			}
 		}
+		sharedIdeas.remove(idea);
+		sharedIdeas.add(idea);
 	}
 	
 	/**

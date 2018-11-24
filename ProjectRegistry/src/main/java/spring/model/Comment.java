@@ -147,6 +147,7 @@ public class Comment {
 			if (v.getVoter().getUsername().equals(vote.getVoter().getUsername())
 					&& v.getComment().getId() == vote.getComment().getId()) {
 				v.setUpVote(vote.getUpVote());
+				return;
 			}
 		}
 		this.getVotes().add(vote);

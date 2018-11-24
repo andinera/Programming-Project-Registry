@@ -17,7 +17,7 @@ import org.springframework.web.servlet.ModelAndView;
  */
 @Controller
 public class HomeController extends AbstractController {
-	
+
 	/**
 	 * Loads the home view with a subset of @{link spring.model.Idea}s.
 	 * 
