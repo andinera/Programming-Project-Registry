@@ -10,89 +10,139 @@
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
-  <class id="2" language="java" name="spring.service.IdeaService" project="ProjectRegistry" 
-    file="/ProjectRegistry/src/main/java/spring/service/IdeaService.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="314" y="469"/>    
-    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
-      sort-features="false" accessors="true" visibility="true">      
-      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
-      <operations public="true" package="true" protected="true" private="true" static="true"/>    
-    </display>  
-  </class>  
-  <class id="3" language="java" name="spring.service.DevelopmentService" project="ProjectRegistry" 
+  <class id="2" language="java" name="spring.service.DevelopmentService" project="ProjectRegistry" 
     file="/ProjectRegistry/src/main/java/spring/service/DevelopmentService.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="-17" y="435"/>    
+    <position height="-1" width="-1" x="-319" y="467"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
-  <class id="4" language="java" name="spring.service.CommentService" project="ProjectRegistry" 
+  <class id="3" language="java" name="spring.service.CommentService" project="ProjectRegistry" 
     file="/ProjectRegistry/src/main/java/spring/service/CommentService.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="-385" y="438"/>    
+    <position height="-1" width="-1" x="-422" y="215"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
-  <class id="5" language="java" name="spring.service.UserService" project="ProjectRegistry" 
+  <class id="4" language="java" name="spring.service.UserService" project="ProjectRegistry" 
     file="/ProjectRegistry/src/main/java/spring/service/UserService.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="596" y="433"/>    
+    <position height="-1" width="-1" x="733" y="334"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
-  <class id="6" language="java" name="spring.service.VoteService" project="ProjectRegistry" 
+  <class id="5" language="java" name="spring.service.VoteService" project="ProjectRegistry" 
     file="/ProjectRegistry/src/main/java/spring/service/VoteService.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="911" y="397"/>    
+    <position height="-1" width="-1" x="899" y="103"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
-  <association id="7">    
+  <class id="6" language="java" name="spring.controller.AbstractController" project="ProjectRegistry" 
+    file="/ProjectRegistry/src/main/java/spring/controller/AbstractController.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="-103" y="72"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <interface id="7" language="java" name="spring.service.IService" project="ProjectRegistry" 
+    file="/ProjectRegistry/src/main/java/spring/service/IService.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="200" y="383"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </interface>  
+  <interface id="8" language="java" name="spring.dao.IDAO" project="ProjectRegistry" 
+    file="/ProjectRegistry/src/main/java/spring/dao/IDAO.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="420" y="383"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </interface>  
+  <association id="9">    
     <end type="SOURCE" refId="1" navigable="false">      
-      <attribute id="8" name="ideaService"/>      
-      <multiplicity id="9" minimum="0" maximum="1"/>    
-    </end>    
-    <end type="TARGET" refId="2" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
-  <association id="10">    
-    <end type="SOURCE" refId="1" navigable="false">      
-      <attribute id="11" name="voteService"/>      
-      <multiplicity id="12" minimum="0" maximum="1"/>    
-    </end>    
-    <end type="TARGET" refId="6" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
-  <association id="13">    
-    <end type="SOURCE" refId="1" navigable="false">      
-      <attribute id="14" name="commentService"/>      
-      <multiplicity id="15" minimum="0" maximum="1"/>    
-    </end>    
-    <end type="TARGET" refId="4" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
-  <association id="16">    
-    <end type="SOURCE" refId="1" navigable="false">      
-      <attribute id="17" name="developmentService"/>      
-      <multiplicity id="18" minimum="0" maximum="1"/>    
+      <attribute id="10" name="commentService">        
+        <position height="0" width="0" x="-37" y="-223"/>      
+      </attribute>      
+      <multiplicity id="11" minimum="0" maximum="1">        
+        <position height="0" width="0" x="-37" y="-223"/>      
+      </multiplicity>    
     </end>    
     <end type="TARGET" refId="3" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
-  <association id="19">    
+  <association id="12">    
     <end type="SOURCE" refId="1" navigable="false">      
-      <attribute id="20" name="userService"/>      
-      <multiplicity id="21" minimum="0" maximum="1"/>    
+      <attribute id="13" name="userService">        
+        <position height="0" width="0" x="137" y="-99"/>      
+      </attribute>      
+      <multiplicity id="14" minimum="0" maximum="1">        
+        <position height="0" width="0" x="137" y="-99"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="4" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="15">    
+    <end type="SOURCE" refId="1" navigable="false">      
+      <attribute id="16" name="ideaService"/>      
+      <multiplicity id="17" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="7" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="18">    
+    <end type="SOURCE" refId="1" navigable="false">      
+      <attribute id="19" name="voteService">        
+        <position height="0" width="0" x="-12" y="-294"/>      
+      </attribute>      
+      <multiplicity id="20" minimum="0" maximum="1">        
+        <position height="0" width="0" x="-12" y="-294"/>      
+      </multiplicity>    
     </end>    
     <end type="TARGET" refId="5" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="21">    
+    <end type="SOURCE" refId="1" navigable="false">      
+      <attribute id="22" name="ideaDAO"/>      
+      <multiplicity id="23" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="8" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="24">    
+    <end type="SOURCE" refId="6" navigable="false">      
+      <attribute id="25" name="serviceFacade"/>      
+      <multiplicity id="26" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="1" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="27">    
+    <end type="SOURCE" refId="1" navigable="false">      
+      <attribute id="28" name="developmentService">        
+        <position height="0" width="0" x="-302" y="32"/>      
+      </attribute>      
+      <multiplicity id="29" minimum="0" maximum="1">        
+        <position height="0" width="0" x="-302" y="32"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="2" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
   <classifier-display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
