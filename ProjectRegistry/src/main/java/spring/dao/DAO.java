@@ -16,7 +16,7 @@ import org.springframework.stereotype.Repository;
  *
  */
 @Repository("dAO")
-public class DAO {
+public class DAO implements IDAO {
 
 	@Autowired
 	protected SessionFactory sessionFactory;

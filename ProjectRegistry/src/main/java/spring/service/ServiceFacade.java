@@ -5,8 +5,9 @@ import javax.servlet.http.HttpSession;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import spring.dao.IDAO;
 import spring.model.*;
-import spring.proxy.Proxy;
+import spring.pager.Pager;
 
 
 /**
@@ -20,7 +21,10 @@ import spring.proxy.Proxy;
 public class ServiceFacade {
 
 	@Autowired
-	private IdeaService ideaService;
+	private IDAO ideaDAO;
+	
+	@Autowired
+	private IService ideaService;
 	
 	@Autowired
 	private UserService userService;
@@ -47,7 +51,7 @@ public class ServiceFacade {
 	}
 	
 	/**
-	 * Loads a {@link spring.model.User} along with {@link spring.proxy.Proxy}s of associated
+	 * Loads a {@link spring.model.User} along with {@link spring.pager.Pager}s of associated
 	 * {@link spring.model.Idea}s and {@link spring.model.Development}s into the session.
 	 * 
 	 * @param session The HttpSession representing the session.
@@ -55,26 +59,26 @@ public class ServiceFacade {
 	public void loadUser(HttpSession session) {
 		User user = userService.loadByUsername(session.getId(), (String) session.getAttribute("username"));
 		session.setAttribute("user", user);
-		Proxy<Idea> ideaProxy = ideaService.loadByPage(session.getId(), user.getIdeas(), (int) session.getAttribute("userPageOfIdeas"));
-		session.setAttribute("numIdeaPages", ideaProxy.getNumPages());
-		session.setAttribute("ideaPage", ideaProxy.getPage());
-		session.setAttribute("ideas", ideaProxy.getPagedData());
-		Proxy<Development> developmentProxy = developmentService.loadByPage(session.getId(), user.getDevelopments(), (int) session.getAttribute("userPageOfDevelopments"));
-		session.setAttribute("numDevelopmentPages", developmentProxy.getNumPages());
-		session.setAttribute("developmentPage", developmentProxy.getPage());
-		session.setAttribute("developments", developmentProxy.getPagedData());
+		Pager<Idea> ideaPager = ideaService.loadByPage(session.getId(), user.getIdeas(), (int) session.getAttribute("userPageOfIdeas"));
+		session.setAttribute("numIdeaPages", ideaPager.getNumPages());
+		session.setAttribute("ideaPage", ideaPager.getPage());
+		session.setAttribute("ideas", ideaPager.getPagedData());
+		Pager<Development> developmentPager = developmentService.loadByPage(session.getId(), user.getDevelopments(), (int) session.getAttribute("userPageOfDevelopments"));
+		session.setAttribute("numDevelopmentPages", developmentPager.getNumPages());
+		session.setAttribute("developmentPage", developmentPager.getPage());
+		session.setAttribute("developments", developmentPager.getPagedData());
 	}
 	
 	/**
-	 * Loads a {@link spring.proxy.Proxy} of {@link spring.model.User}s into the session.
+	 * Loads a {@link spring.pager.Pager} of {@link spring.model.User}s into the session.
 	 * 
 	 * @param session The HttpSession representing the session.
 	 */
 	public void loadUsersByKeyword(HttpSession session) {
-		Proxy<User> proxy = userService.loadByPage(session.getId(), (String) session.getAttribute("keyword"), (int) session.getAttribute("searchPageOfUsers"));
-		session.setAttribute("numUserPages", proxy.getNumPages());
-		session.setAttribute("userPage", proxy.getPage());
-		session.setAttribute("users", proxy.getPagedData());
+		Pager<User> Pager = userService.loadByPage(session.getId(), (String) session.getAttribute("keyword"), (int) session.getAttribute("searchPageOfUsers"));
+		session.setAttribute("numUserPages", Pager.getNumPages());
+		session.setAttribute("userPage", Pager.getPage());
+		session.setAttribute("users", Pager.getPagedData());
 	}
 	
 	// ### Idea ###
@@ -97,34 +101,34 @@ public class ServiceFacade {
 	}
 	
 	/**
-	 * Loads an {@link spring.model.Idea} along with {@link spring.proxy.Proxy}s of associated
+	 * Loads an {@link spring.model.Idea} along with {@link spring.pager.Pager}s of associated
 	 * {@link spring.model.Development}s and {@link spring.model.Comment}s into the session.
 	 * 
 	 * @param session The HttpSession representing the session.
 	 */
 	public void loadIdea(HttpSession session) {
-		Idea idea = ideaService.loadById((int) session.getAttribute("ideaId"));
+		Idea idea = (Idea) ideaDAO.loadById((int) session.getAttribute("ideaId"));
 		session.setAttribute("idea", idea);
-		Proxy<Development> developmentProxy = developmentService.loadByPage(session.getId(), idea.getDevelopments(), (int) session.getAttribute("ideaPageOfDevelopments"));
-		session.setAttribute("numDevelopmentPages", developmentProxy.getNumPages());
-		session.setAttribute("developmentPage", developmentProxy.getPage());
-		session.setAttribute("developments", developmentProxy.getPagedData());
-		Proxy<Comment> commentProxy = commentService.loadByPage(session.getId(), idea.getComments(), (int) session.getAttribute("ideaPageOfComments"));
-		session.setAttribute("numCommentPages", commentProxy.getNumPages());
-		session.setAttribute("commentPage", commentProxy.getPage());
-		session.setAttribute("comments", commentProxy.getPagedData());
+		Pager<Development> developmentPager = developmentService.loadByPage(session.getId(), idea.getDevelopments(), (int) session.getAttribute("ideaPageOfDevelopments"));
+		session.setAttribute("numDevelopmentPages", developmentPager.getNumPages());
+		session.setAttribute("developmentPage", developmentPager.getPage());
+		session.setAttribute("developments", developmentPager.getPagedData());
+		Pager<Comment> commentPager = commentService.loadByPage(session.getId(), idea.getComments(), (int) session.getAttribute("ideaPageOfComments"));
+		session.setAttribute("numCommentPages", commentPager.getNumPages());
+		session.setAttribute("commentPage", commentPager.getPage());
+		session.setAttribute("comments", commentPager.getPagedData());
 	}
 	
 	/**
-	 * Loads a {@link spring.proxy.Proxy} of {@link spring.model.Idea}s into the session.
+	 * Loads a {@link spring.pager.Pager} of {@link spring.model.Idea}s into the session.
 	 * 
 	 * @param session The HttpSession representing the session.
 	 */
 	public void loadIdeasByPage(HttpSession session) {
-		Proxy<Idea> proxy = ideaService.loadByPage(session.getId(), (int) session.getAttribute("homePageOfIdeas"));
-		session.setAttribute("numHomePagesOfIdeas", proxy.getNumPages());
-		session.setAttribute("homePageOfIdeas", proxy.getPage());
-		session.setAttribute("homeIdeas", proxy.getPagedData());
+		Pager<Idea> Pager = ideaService.loadByPage(session.getId(), (int) session.getAttribute("homePageOfIdeas"));
+		session.setAttribute("numHomePagesOfIdeas", Pager.getNumPages());
+		session.setAttribute("homePageOfIdeas", Pager.getPage());
+		session.setAttribute("homeIdeas", Pager.getPagedData());
 	}
 	
 	// ### Development ###
@@ -141,7 +145,7 @@ public class ServiceFacade {
 		User user = userService.loadByUsername(session.getId(), username);
 		session.setAttribute("user", user);
 		Idea idea = (Idea) session.getAttribute("idea");
-		idea = ideaService.loadById(idea.getId());
+		idea = (Idea) ideaDAO.loadById(idea.getId());
 		session.setAttribute("idea", idea);
 		Development development = developmentService.create(idea, link, user);
 		for (Development d : idea.getDevelopments()) {
@@ -152,7 +156,7 @@ public class ServiceFacade {
 		development = user.addDevelopment(development);
 		idea.addDevelopment(development);
 		userService.saveOrUpdate(user);
-		ideaService.saveOrUpdate(idea);
+		ideaDAO.saveOrUpdate(idea);
 	}
 	
 	// ### Comment ###
@@ -167,11 +171,11 @@ public class ServiceFacade {
 		User user = userService.loadByUsername(session.getId(), username);
 		session.setAttribute("user", user);
 		Idea idea = (Idea) session.getAttribute("idea");
-		idea = ideaService.loadById(idea.getId());
+		idea = (Idea) ideaDAO.loadById(idea.getId());
 		session.setAttribute("idea", idea);
 		Comment c = commentService.create(user, comment);
 		idea.addComment(c);
-		ideaService.saveOrUpdate(idea);
+		ideaDAO.saveOrUpdate(idea);
 	}
 	
 	// ### IdeaVote ###
@@ -187,11 +191,11 @@ public class ServiceFacade {
 		User user = userService.loadByUsername(session.getId(), username);
 		session.setAttribute("user", user);
 		Idea idea = (Idea) session.getAttribute("idea");
-		idea = ideaService.loadById(idea.getId());
+		idea = (Idea) ideaDAO.loadById(idea.getId());
 		session.setAttribute("idea", idea);
 		IdeaVote vote = voteService.create(user, upVote, idea);
 		idea.addVote(vote);
-		ideaService.saveOrUpdate(idea);
+		ideaDAO.saveOrUpdate(idea);
 	}
 	
 	/**
@@ -207,7 +211,7 @@ public class ServiceFacade {
 		User user = userService.loadByUsername(session.getId(), username);
 		session.setAttribute("user", user);
 		Idea idea = (Idea) session.getAttribute("idea");
-		idea = ideaService.loadById(idea.getId());
+		idea = (Idea) ideaDAO.loadById(idea.getId());
 		session.setAttribute("idea", idea);
 		Development development = developmentService.loadById(session.getId(), developmentId);
 		DevelopmentVote vote = voteService.create(user, upVote, development);
@@ -228,7 +232,7 @@ public class ServiceFacade {
 		User user = userService.loadByUsername(session.getId(), username);
 		session.setAttribute("user", user);
 		Idea idea = (Idea) session.getAttribute("idea");
-		idea = ideaService.loadById(idea.getId());
+		idea = (Idea) ideaDAO.loadById(idea.getId());
 		session.setAttribute("idea", idea);
 		Comment comment = commentService.loadById(session.getId(), commentId);
 		CommentVote vote = voteService.create(user, upVote, comment);

@@ -1,5 +1,6 @@
 package spring.service;
 
+import java.io.Serializable;
 import java.util.GregorianCalendar;
 import java.util.Map;
 import java.util.Set;
@@ -8,17 +9,17 @@ import java.util.Hashtable;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
-import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import spring.comparator.IdeaComparatorByVote;
+import spring.dao.IDAO;
 import spring.dao.IdeaDAO;
 import spring.model.Idea;
 import spring.model.User;
-import spring.proxy.Proxy;
+import spring.pager.Pager;
 
 
 /**
@@ -30,14 +31,14 @@ import spring.proxy.Proxy;
  *
  */
 @Service("ideaService")
-public class IdeaService {
+public class IdeaService implements IDAO, IService {
 	
 	@Autowired
 	@Qualifier("ideaDAO")
 	private IdeaDAO dao;
 	
 	private Set<Idea> sharedIdeas;
-	private Map<String, Proxy<Idea>> sessionProxies = new Hashtable<String, Proxy<Idea>>();
+	private Map<String, Pager<Idea>> sessionProxies = new Hashtable<String, Pager<Idea>>();
 	
 	
 	/**
@@ -56,10 +57,10 @@ public class IdeaService {
 	 * 
 	 * @param idea The {@link spring.model.Idea} to be saved.
 	 */
-	@Transactional
-	public int save(Idea idea) {
-		int id = (int) dao.save(idea);
-		sharedIdeas.add(idea);
+	@Override
+	public Serializable save(Object idea) {
+		Serializable id = dao.save(idea);
+		sharedIdeas.add((Idea) idea);
 		return id;
 	}
 	
@@ -68,9 +69,9 @@ public class IdeaService {
 	 * 
 	 * @param idea The {@link spring.model.Idea} to be updated.
 	 */
-	@Transactional
-	public void update(Idea idea) {
-		dao.update(idea);
+	@Override
+	public void update(Object idea) {
+		dao.update((Idea) idea);
 	} 
 	
 	/**
@@ -78,16 +79,17 @@ public class IdeaService {
 	 * 
 	 * @param idea The {@link spring.model.Idea} to be saved or updated.
 	 */
-	public void saveOrUpdate(Idea idea) {
-		dao.saveOrUpdate(idea);
+	@Override
+	public void saveOrUpdate(Object idea) {
+		dao.saveOrUpdate((Idea) idea);
 		for (Idea i : sharedIdeas) {
-			if (i.getId() == idea.getId()) {
-				i = idea;
+			if (i.getId() == ((Idea) idea).getId()) {
+				i = (Idea) idea;
 				break;
 			}
 		}
-		sharedIdeas.remove(idea);
-		sharedIdeas.add(idea);
+		sharedIdeas.remove((Idea) idea);
+		sharedIdeas.add((Idea) idea);
 	}
 	
 	/**
@@ -98,6 +100,7 @@ public class IdeaService {
 	 * @param poster The {@link spring.model.User} representing the poster.
 	 * @return {@link spring.model.Idea}
 	 */
+	@Override
 	public Idea create(String title, String description, User poster) {
 		return new Idea(title, description, poster, new GregorianCalendar());
 	}
@@ -108,6 +111,7 @@ public class IdeaService {
 	 * 
 	 * @param idea The {@link spring.model.Idea} to be stored.
 	 */
+	@Override
 	public void add(Idea idea) {
 		for (Idea i : sharedIdeas) {
 			if (i.getId() == idea.getId()) {
@@ -124,9 +128,10 @@ public class IdeaService {
 	 * @param id The int representing the {@link spring.model.Idea}'s id.
 	 * @return {@link spring.model.Idea}
 	 */
-	public Idea loadById(int id) {
+	@Override
+	public Idea loadById(Serializable id) {
 		for (Idea idea : sharedIdeas) {
-			if (idea.getId() == id) {
+			if (idea.getId() == (int) id) {
 				return idea;
 			}
 		}
@@ -137,17 +142,18 @@ public class IdeaService {
 	
 	/**
 	 * Proxies the globally shared {@link spring.model.Idea}s with the passed page and returns 
-	 * the {@link spring.proxy.Proxy}.
+	 * the {@link spring.pager.Pager}.
 	 * 
 	 * @param sessionId The String representing the session's id.
 	 * @param page The int representing the subset of data to be stored in the 
-	 * {@link spring.proxy.Proxy}.
-	 * @return {@link spring.proxy.Proxy}
+	 * {@link spring.pager.Pager}.
+	 * @return {@link spring.pager.Pager}
 	 */
-	public Proxy<Idea> loadByPage(String sessionId, int page) {
-		Proxy<Idea> proxy = sessionProxies.get(sessionId);
+	@Override
+	public Pager<Idea> loadByPage(String sessionId, int page) {
+		Pager<Idea> proxy = sessionProxies.get(sessionId);
 		if (proxy == null) {
-			proxy = new Proxy<Idea>();
+			proxy = new Pager<Idea>();
 			sessionProxies.put(sessionId, proxy);
 		}
 		Set<Idea> orderedIdeas = new TreeSet<Idea>(new IdeaComparatorByVote());
@@ -158,19 +164,20 @@ public class IdeaService {
 	
 	/**
 	 * Proxies the passed {@link spring.model.Idea}s with the passed page and returns 
-	 * the {@link spring.proxy.Proxy}. The proxied data is sorted with 
+	 * the {@link spring.pager.Pager}. The proxied data is sorted with 
 	 * {@link spring.comparator.IdeaComparatorByVote}.
 	 * 
 	 * @param sessionId The String representing the session's id.
 	 * @param ideas The {@link spring.model.Idea}s to be proxied.
 	 * @param page The int representing the subset of data to be stored in the 
-	 * {@link spring.proxy.Proxy}.
-	 * @return {@link spring.proxy.Proxy}
+	 * {@link spring.pager.Pager}.
+	 * @return {@link spring.pager.Pager}
 	 */
-	public Proxy<Idea> loadByPage(String sessionId, Set<Idea> ideas, int page) {
-		Proxy<Idea> proxy = sessionProxies.get(sessionId);
+	@Override
+	public Pager<Idea> loadByPage(String sessionId, Set<Idea> ideas, int page) {
+		Pager<Idea> proxy = sessionProxies.get(sessionId);
 		if (proxy == null) {
-			proxy = new Proxy<Idea>();
+			proxy = new Pager<Idea>();
 			sessionProxies.put(sessionId, proxy);
 		}
 		Set<Idea> orderedIdeas = new TreeSet<Idea>(new IdeaComparatorByVote());

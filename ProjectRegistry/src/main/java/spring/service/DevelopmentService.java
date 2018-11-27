@@ -15,7 +15,7 @@ import spring.dao.DevelopmentDAO;
 import spring.model.Development;
 import spring.model.Idea;
 import spring.model.User;
-import spring.proxy.Proxy;
+import spring.pager.Pager;
 
 
 /**
@@ -32,7 +32,7 @@ public class DevelopmentService {
 	@Qualifier("developmentDAO")
 	private DevelopmentDAO dao;
 	
-	private Map<String, Proxy<Development>> sessionProxies = new Hashtable<String, Proxy<Development>>();
+	private Map<String, Pager<Development>> sessionProxies = new Hashtable<String, Pager<Development>>();
 	
 	
 	/**
@@ -83,7 +83,7 @@ public class DevelopmentService {
 	 * @return {@link spring.model.Development}
 	 */
 	public Development loadById(String sessionId, int id) {
-		Proxy<Development> proxy = sessionProxies.get(sessionId);
+		Pager<Development> proxy = sessionProxies.get(sessionId);
 		List<Development> developments = proxy.getPagedData();
 		for (Development development : developments) {
 			if (development.getId() == id) {
@@ -96,19 +96,19 @@ public class DevelopmentService {
 	
 	/**
 	 * Proxies the passed {@link spring.model.Development}s with the passed page and returns the
-	 * {@link spring.proxy.Proxy}. The proxied data is sorted with 
+	 * {@link spring.pager.Pager}. The proxied data is sorted with 
 	 * {@link spring.comparator.DevelopmentComparatorByVote}.
 	 * 
 	 * @param sessionId The String representing the session's id.
 	 * @param developments The {@link spring.model.Development}s to be proxied.
 	 * @param page The int representing the subset of data to be stored in the 
-	 * {@link spring.proxy.Proxy}.
-	 * @return {@link spring.proxy.Proxy}
+	 * {@link spring.pager.Pager}.
+	 * @return {@link spring.pager.Pager}
 	 */
-	public Proxy<Development> loadByPage(String sessionId, Set<Development> developments, int page) {
-		Proxy<Development> proxy = sessionProxies.get(sessionId);
+	public Pager<Development> loadByPage(String sessionId, Set<Development> developments, int page) {
+		Pager<Development> proxy = sessionProxies.get(sessionId);
 		if (proxy == null) {
-			proxy = new Proxy<Development>();
+			proxy = new Pager<Development>();
 			sessionProxies.put(sessionId, proxy);
 		}
 		Set<Development> orderedDevelopments = new TreeSet<Development>(new DevelopmentComparatorByVote());

@@ -18,7 +18,7 @@ import org.springframework.stereotype.Service;
 
 import spring.comparator.UserComparatorByVote;
 import spring.dao.UserDAO;
-import spring.proxy.Proxy;
+import spring.pager.Pager;
 
 
 /**
@@ -38,7 +38,7 @@ public class UserService {
 	@Qualifier("userDAO")
 	private UserDAO dao;
 	
-	private Map<String, Proxy<spring.model.User>> sessionProxies = new Hashtable<String, Proxy<spring.model.User>>();
+	private Map<String, Pager<spring.model.User>> sessionProxies = new Hashtable<String, Pager<spring.model.User>>();
 	
 	
 	/**
@@ -87,9 +87,9 @@ public class UserService {
 	 * @return {@link spring.model.User}
 	 */
 	public spring.model.User loadByUsername(String sessionId, String username) {
-		Proxy<spring.model.User> proxy = sessionProxies.get(sessionId);
+		Pager<spring.model.User> proxy = sessionProxies.get(sessionId);
 		if (proxy == null) {
-			proxy = new Proxy<spring.model.User>();
+			proxy = new Pager<spring.model.User>();
 			sessionProxies.put(sessionId, proxy);
 		} else {
 			List<spring.model.User> users = proxy.getPagedData();
@@ -107,19 +107,19 @@ public class UserService {
 	/**
 	 * Loads {@link spring.model.User}s from a database with usernames that contain the passed
 	 * keyword. Proxies the returne  {@link spring.model.User}s with the passed page and returns 
-	 * the {@link spring.proxy.Proxy}. The proxied data is sorted with 
+	 * the {@link spring.pager.Pager}. The proxied data is sorted with 
 	 * {@link spring.comparator.UserComparatorByVote}.
 	 * 
 	 * @param sessionId The String representing the session's id.
 	 * @param keyword The String to be used in the database query.
 	 * @param page The int representing the subset of data to be stored in the 
-	 * {@link spring.proxy.Proxy}.
-	 * @return {@link spring.proxy.Proxy}
+	 * {@link spring.pager.Pager}.
+	 * @return {@link spring.pager.Pager}
 	 */
-	public Proxy<spring.model.User> loadByPage(String sessionId, String keyword, int page) {
-		Proxy<spring.model.User> proxy = sessionProxies.get(sessionId);
+	public Pager<spring.model.User> loadByPage(String sessionId, String keyword, int page) {
+		Pager<spring.model.User> proxy = sessionProxies.get(sessionId);
 		if (proxy == null) {
-			proxy = new Proxy<spring.model.User>();
+			proxy = new Pager<spring.model.User>();
 			sessionProxies.put(sessionId, proxy);
 		}
 		TreeSet<spring.model.User> dataSet = new TreeSet<spring.model.User>(new UserComparatorByVote());

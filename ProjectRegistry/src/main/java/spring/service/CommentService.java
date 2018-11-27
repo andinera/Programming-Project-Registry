@@ -15,7 +15,7 @@ import spring.comparator.CommentComparatorByVote;
 import spring.dao.CommentDAO;
 import spring.model.Comment;
 import spring.model.User;
-import spring.proxy.Proxy;
+import spring.pager.Pager;
 
 
 /**
@@ -32,7 +32,7 @@ public class CommentService {
 	@Qualifier("commentDAO")
 	private CommentDAO dao;
 	
-	private Map<String, Proxy<Comment>> sessionProxies = new Hashtable<String, Proxy<Comment>>();
+	private Map<String, Pager<Comment>> sessionProxies = new Hashtable<String, Pager<Comment>>();
 	
 	
 	/**
@@ -82,7 +82,7 @@ public class CommentService {
 	 * @return {@link spring.model.Comment}
 	 */
 	public Comment loadById(String sessionId, int id) {
-		Proxy<Comment> proxy = sessionProxies.get(sessionId);
+		Pager<Comment> proxy = sessionProxies.get(sessionId);
 		List<Comment> comments = proxy.getPagedData();
 		for (Comment comment : comments) {
 			if (comment.getId() == id) {
@@ -95,19 +95,19 @@ public class CommentService {
 	
 	/**
 	 * Proxies the passed {@link spring.model.Comment}s with the passed page and returns the
-	 * {@link spring.proxy.Proxy}. The proxied data is sorted with 
+	 * {@link spring.pager.Pager}. The proxied data is sorted with 
 	 * {@link spring.comparator.CommentComparatorByVote}.
 	 * 
 	 * @param sessionId The String representing the session's id.
 	 * @param comments The {@link spring.model.Comment}s to be proxied.
 	 * @param page The int representing the subset of data to be stored in the 
-	 * {@link spring.proxy.Proxy}.
-	 * @return {@link spring.proxy.Proxy}
+	 * {@link spring.pager.Pager}.
+	 * @return {@link spring.pager.Pager}
 	 */
-	public Proxy<Comment> loadByPage(String sessionId, Set<Comment> comments, int page) {
-		Proxy<Comment> proxy = sessionProxies.get(sessionId);
+	public Pager<Comment> loadByPage(String sessionId, Set<Comment> comments, int page) {
+		Pager<Comment> proxy = sessionProxies.get(sessionId);
 		if (proxy == null) {
-			proxy = new Proxy<Comment>();
+			proxy = new Pager<Comment>();
 			sessionProxies.put(sessionId, proxy);
 		}
 		Set<Comment> orderedComments = new TreeSet<Comment>(new CommentComparatorByVote());
